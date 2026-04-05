@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>كلية قلب الجليل للهندسيين | كلية تقنية تطبيقية - عطروت القدس</title>
+    <title>كلية قلب الجليل للهندسيين | متعدد اللغات</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts: Cairo -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Cairo + Heebo (Hebrew) + Roboto (English) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Heebo:wght@300;400;500;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -23,11 +23,50 @@
             scroll-behavior: smooth;
         }
 
+        /* Language-specific font overrides */
+        body.lang-he {
+            font-family: 'Heebo', sans-serif;
+        }
+        body.lang-en {
+            font-family: 'Roboto', sans-serif;
+        }
+        body.lang-ar {
+            font-family: 'Cairo', sans-serif;
+        }
+
         .container {
             width: 90%;
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 20px;
+        }
+
+        /* Language switcher */
+        .lang-switch {
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 5px 12px;
+            border-radius: 40px;
+            align-items: center;
+        }
+        .lang-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 30px;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .lang-btn.active {
+            background: #f9d56e;
+            color: #1e2a3e;
+        }
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.3);
         }
 
         header {
@@ -50,11 +89,9 @@
             font-size: 1.5rem;
             font-weight: 800;
             color: #f9d56e;
-            letter-spacing: -0.5px;
             margin: 0;
             line-height: 1.3;
         }
-
         .logo p {
             font-size: 0.7rem;
             color: #e0f2fe;
@@ -67,7 +104,6 @@
             gap: 2rem;
             list-style: none;
         }
-
         .nav-links li a {
             color: white;
             text-decoration: none;
@@ -77,12 +113,10 @@
             padding: 0.5rem 0;
             border-bottom: 2px solid transparent;
         }
-
         .nav-links li a:hover {
             border-bottom-color: #f9d56e;
             color: #f9d56e;
         }
-
         .menu-toggle {
             display: none;
             font-size: 1.8rem;
@@ -97,821 +131,292 @@
             color: white;
             text-align: center;
         }
+        .hero h2 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem auto; }
+        .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn { display: inline-block; padding: 0.8rem 1.8rem; border-radius: 40px; font-weight: 700; text-decoration: none; transition: 0.3s; font-size: 1rem; }
+        .btn-primary { background-color: #f9d56e; color: #1e2a3e; border: 2px solid #f9d56e; }
+        .btn-primary:hover { background-color: transparent; color: #f9d56e; border-color: #f9d56e; }
+        .btn-outline-light { border: 2px solid white; color: white; background: transparent; }
+        .btn-outline-light:hover { background: white; color: #1b4f6e; }
 
-        .hero h2 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-        }
+        section { padding: 5rem 0; }
+        .section-title { font-size: 2.2rem; font-weight: 800; text-align: center; margin-bottom: 3rem; position: relative; color: #0b2b3b; }
+        .section-title:after { content: ''; display: block; width: 80px; height: 4px; background: #f9d56e; margin: 12px auto 0; border-radius: 4px; }
 
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 2rem auto;
-            opacity: 0.95;
-        }
+        .about-grid { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; }
+        .about-text { flex: 1; }
+        .about-text p { margin-bottom: 1rem; font-size: 1.05rem; }
+        .stats { flex: 1; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+        .stat-card { background: white; border-radius: 24px; padding: 1.5rem; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.05); width: 160px; }
+        .stat-card i { font-size: 2.5rem; color: #f9b43a; margin-bottom: 1rem; }
+        .stat-card h3 { font-size: 2rem; font-weight: 800; }
 
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+        .programs-grid, .stories-grid, .faculty-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .program-card, .story-card, .faculty-card { background: white; border-radius: 28px; padding: 2rem 1.5rem; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #eef2f5; }
+        .program-card:hover, .story-card:hover { transform: translateY(-8px); }
+        .program-card i { font-size: 3rem; color: #1b4f6e; margin-bottom: 1rem; }
+        .story-card { padding: 0; overflow: hidden; text-align: right; }
+        .story-img { width: 100%; height: 200px; object-fit: cover; }
+        .story-content { padding: 1.5rem; text-align: right; }
+        .story-tag { display: inline-block; background: #f9b43a20; color: #b45f06; font-size: 0.8rem; font-weight: 600; padding: 0.2rem 0.8rem; border-radius: 50px; margin-bottom: 1rem; }
+        .quote-icon { color: #f9b43a; opacity: 0.5; font-size: 2rem; margin-bottom: 0.5rem; }
 
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
-            border-radius: 40px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 1rem;
-        }
+        .faculty-card img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; border: 5px solid #f9d56e; }
+        .faculty-card h4 { font-size: 1.5rem; margin: 0.5rem 0; }
 
-        .btn-primary {
-            background-color: #f9d56e;
-            color: #1e2a3e;
-            border: 2px solid #f9d56e;
-        }
+        .admission-box { background: white; border-radius: 30px; padding: 2rem; box-shadow: 0 15px 30px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; }
+        .admission-info { flex: 1; }
+        .admission-info ul { list-style: none; padding-right: 0; }
+        .admission-info li { margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; }
+        .btn-apply { background: #1b4f6e; color: white; border: none; padding: 0.9rem 2rem; border-radius: 50px; font-weight: bold; cursor: pointer; }
 
-        .btn-primary:hover {
-            background-color: transparent;
-            color: #f9d56e;
-            border-color: #f9d56e;
-        }
+        .contact-wrapper { display: flex; flex-wrap: wrap; gap: 2rem; background: white; border-radius: 30px; padding: 2rem; }
+        .office-hours-table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: #fefaf2; border-radius: 20px; overflow: hidden; }
+        .office-hours-table th, .office-hours-table td { border: 1px solid #e2dccd; padding: 8px 12px; text-align: center; }
+        .office-hours-table th { background-color: #1b4f6e; color: white; }
 
-        .btn-outline-light {
-            border: 2px solid white;
-            color: white;
-            background: transparent;
-        }
+        .constitution-section { background-color: #fffcf0; }
+        .constitution-container { background: white; border-radius: 32px; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.05); }
+        .fine-print { margin-top: 2rem; text-align: center; font-size: 0.9rem; border-top: 1px dashed #ccc; padding-top: 1.5rem; color: #4a627a; }
 
-        .btn-outline-light:hover {
-            background: white;
-            color: #1b4f6e;
-        }
+        footer { background: #0b2b3b; color: #cfdfe9; padding: 2.5rem 0; text-align: center; }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; align-items: center; }
+        .social-icons a { color: white; margin: 0 10px; font-size: 1.4rem; transition: 0.2s; }
+        .social-icons a:hover { color: #f9d56e; }
 
-        section {
-            padding: 5rem 0;
-        }
-
-        .section-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-            color: #0b2b3b;
-        }
-
-        .section-title:after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: #f9d56e;
-            margin: 12px auto 0;
-            border-radius: 4px;
-        }
-
-        .about-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .about-text {
-            flex: 1;
-        }
-
-        .about-text p {
-            margin-bottom: 1rem;
-            font-size: 1.05rem;
-        }
-
-        .stats {
-            flex: 1;
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 24px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
-            width: 160px;
-            transition: 0.2s;
-        }
-
-        .stat-card i {
-            font-size: 2.5rem;
-            color: #f9b43a;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card h3 {
-            font-size: 2rem;
-            font-weight: 800;
-        }
-
-        .programs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .program-card {
-            background: white;
-            border-radius: 28px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: 0.3s;
-            border: 1px solid #eef2f5;
-        }
-
-        .program-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
-        }
-
-        .program-card i {
-            font-size: 3rem;
-            color: #1b4f6e;
-            margin-bottom: 1rem;
-        }
-
-        .program-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .faculty-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .faculty-card {
-            background: white;
-            border-radius: 28px;
-            text-align: center;
-            padding: 2rem 1rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        }
-
-        .faculty-card img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 1rem;
-            border: 5px solid #f9d56e;
-        }
-
-        .faculty-card h4 {
-            font-size: 1.5rem;
-            margin: 0.5rem 0;
-            color: #0b2b3b;
-        }
-
-        /* Success Stories Section */
-        .stories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .story-card {
-            background: white;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-            transition: 0.3s;
-            border: 1px solid #eef2f5;
-        }
-
-        .story-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 40px rgba(0,0,0,0.12);
-        }
-
-        .story-img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-        }
-
-        .story-content {
-            padding: 1.8rem;
-        }
-
-        .story-content h3 {
-            font-size: 1.5rem;
-            color: #0b2b3b;
-            margin-bottom: 0.5rem;
-        }
-
-        .story-tag {
-            display: inline-block;
-            background: #f9b43a20;
-            color: #b45f06;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.2rem 0.8rem;
-            border-radius: 50px;
-            margin-bottom: 1rem;
-        }
-
-        .story-content p {
-            color: #2c3e50;
-            line-height: 1.7;
-        }
-
-        .quote-icon {
-            color: #f9b43a;
-            opacity: 0.5;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .admission-box {
-            background: white;
-            border-radius: 30px;
-            padding: 2rem;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            justify-content: space-between;
-        }
-
-        .admission-info {
-            flex: 1;
-        }
-
-        .admission-info ul {
-            list-style: none;
-            padding-right: 0;
-        }
-
-        .admission-info li {
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .admission-info li i {
-            width: 28px;
-            color: #f9b43a;
-            font-size: 1.3rem;
-        }
-
-        .btn-apply {
-            background: #1b4f6e;
-            color: white;
-            border: none;
-            padding: 0.9rem 2rem;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .btn-apply:hover {
-            background: #f9b43a;
-            color: #1e2a3e;
-        }
-
-        .contact-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            background: white;
-            border-radius: 30px;
-            padding: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        }
-
-        .contact-info {
-            flex: 1;
-        }
-
-        .contact-info p {
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .office-hours-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            background: #fefaf2;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        .office-hours-table th, .office-hours-table td {
-            border: 1px solid #e2dccd;
-            padding: 8px 12px;
-            text-align: center;
-        }
-        .office-hours-table th {
-            background-color: #1b4f6e;
-            color: white;
-            font-weight: 600;
-        }
-
-        .contact-form {
-            flex: 1;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 0.9rem;
-            border-radius: 28px;
-            border: 1px solid #ddd;
-            font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
-            background: #fafafc;
-        }
-
-        textarea {
-            resize: vertical;
-        }
-
-        button[type="submit"] {
-            background: #1b4f6e;
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button[type="submit"]:hover {
-            background: #f9b43a;
-            color: #0b2b3b;
-        }
-
-        .constitution-section {
-            background-color: #fffcf0;
-            border-top: 1px solid #e9e0c7;
-            border-bottom: 1px solid #e9e0c7;
-        }
-        .constitution-container {
-            background: white;
-            border-radius: 32px;
-            padding: 2rem 2rem;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.05);
-        }
-        .chapter {
-            margin-bottom: 2.5rem;
-            border-right: 6px solid #f9b43a;
-            padding-right: 1.5rem;
-            background: #fefaf2;
-            border-radius: 0 20px 20px 0;
-            padding: 1.5rem;
-        }
-        .chapter h3 {
-            font-size: 1.8rem;
-            color: #0b2b3b;
-            margin-bottom: 1.2rem;
-            font-weight: 800;
-        }
-        .article {
-            margin-bottom: 1.2rem;
-            padding-right: 0.5rem;
-        }
-        .article strong {
-            color: #1b4f6e;
-            font-size: 1.05rem;
-            display: inline-block;
-            margin-left: 0.5rem;
-        }
-        .article p {
-            display: inline;
-            font-size: 0.98rem;
-        }
-        .fine-print {
-            margin-top: 2rem;
-            text-align: center;
-            font-size: 0.9rem;
-            border-top: 1px dashed #ccc;
-            padding-top: 1.5rem;
-            color: #4a627a;
-        }
-        footer {
-            background: #0b2b3b;
-            color: #cfdfe9;
-            padding: 2.5rem 0;
-            text-align: center;
-        }
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            align-items: center;
-        }
-        .social-icons a {
-            color: white;
-            margin: 0 10px;
-            font-size: 1.4rem;
-            transition: 0.2s;
-        }
-        .social-icons a:hover {
-            color: #f9d56e;
-        }
         @media (max-width: 900px) {
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                text-align: center;
-                background: #0b2b3b;
-                padding: 1rem 0;
-                margin-top: 1rem;
-            }
-            .nav-links.active {
-                display: flex;
-            }
-            .menu-toggle {
-                display: block;
-            }
-            .hero h2 {
-                font-size: 2rem;
-            }
-            .section-title {
-                font-size: 1.8rem;
-            }
-            .chapter h3 {
-                font-size: 1.4rem;
-            }
-            .logo h1 {
-                font-size: 1.2rem;
-            }
+            .nav-links { display: none; width: 100%; flex-direction: column; background: #0b2b3b; padding: 1rem 0; margin-top: 1rem; }
+            .nav-links.active { display: flex; }
+            .menu-toggle { display: block; }
+            .hero h2 { font-size: 2rem; }
+            .section-title { font-size: 1.8rem; }
+            .lang-switch { order: 2; margin-top: 10px; }
         }
-        @media (max-width: 600px) {
-            .container {
-                width: 95%;
-            }
-            .stat-card {
-                width: 130px;
-            }
-            .constitution-container {
-                padding: 1rem;
-            }
-            .logo h1 {
-                font-size: 1.1rem;
-            }
-            .story-img {
-                height: 180px;
-            }
-        }
-        .accent-color {
-            color: #f9b43a;
-        }
-        .map-placeholder {
-            background: #e9ecef;
-            height: 180px;
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #1b4f6e;
-        }
-        .badge-practical {
-            background-color: #f9b43a;
-            color: #1e2a3e;
-            display: inline-block;
-            padding: 0.2rem 1rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
+        .badge-practical { background-color: #f9b43a; color: #1e2a3e; display: inline-block; padding: 0.2rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; }
+        .accent-color { color: #f9b43a; }
+        .map-placeholder { background: #e9ecef; height: 180px; border-radius: 28px; display: flex; align-items: center; justify-content: center; margin-top: 1rem; }
     </style>
 </head>
-<body>
-
-<header>
-    <div class="container">
-        <div class="navbar">
-            <div class="logo">
-                <h1>كلية قلب الجليل للهندسيين</h1>
-                <p>كلية تقنية تطبيقية - عطروت القدس</p>
-            </div>
-            <div class="menu-toggle" id="mobile-menu">
-                <i class="fas fa-bars"></i>
-            </div>
-            <ul class="nav-links" id="nav-list">
-                <li><a href="#home">الرئيسية</a></li>
-                <li><a href="#about">عن الكلية</a></li>
-                <li><a href="#programs">البرامج</a></li>
-                <li><a href="#stories">قصص النجاح</a></li>
-                <li><a href="#faculty">الهيئة التدريسية</a></li>
-                <li><a href="#admissions">القبول</a></li>
-                <li><a href="#constitution">الدستور</a></li>
-                <li><a href="#contact">اتصل بنا</a></li>
-            </ul>
-        </div>
-    </div>
-</header>
-
-<main>
-    <!-- Hero section -->
-    <section id="home" class="hero">
+<body class="lang-ar">
+    <header>
         <div class="container">
-            <div class="badge-practical">كلية مهنية · تقنية · دبلوم عملي</div>
-            <h2>قلب الجليل للهندسة التطبيقية</h2>
-            <p>كلية قلب الجليل للهندسيين هي كلية مهنية/تقنية تركز على التعليم التطبيقي العملي لإعداد الطلاب لسوق العمل مباشرة. نمنح دبلوم هندسي معترف به، ومقرنا في عطروت – القدس، قلب المنطقة الصناعية والتجارية.</p>
-            <div class="btn-group">
-                <a href="#programs" class="btn btn-primary">استكشف التخصصات العملية</a>
-                <a href="#stories" class="btn btn-outline-light">قصص نجاح خريجينا</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about">
-        <div class="container">
-            <h2 class="section-title">عن كلية قلب الجليل للهندسيين</h2>
-            <div class="about-grid">
-                <div class="about-text">
-                    <p><strong>كلية قلب الجليل للهندسيين</strong> هي مؤسسة تعليمية مهنية/تقنية (كليات الهندسيين - Practical Engineering College)، وليست جامعة أكاديمية تقليدية. تركز كليتنا على <strong>التعليم التطبيقي العملي</strong> لتأهيل الطلاب بشكل مباشر لسوق العمل.</p>
-                    <p>نمنح <strong>دبلوم هندسي (هندسي/تكنولوجي)</strong> معترف به من قبل مجلس التعليم العالي الإسرائيلي (MALAG)، ومدة الدراسة تتراوح بين سنتين إلى ثلاث سنوات، مع تركيز كبير على التدريب العملي والمهارات التطبيقية.</p>
-                    <p>تقع الكلية في <strong>منطقة عطروت – القدس</strong>، داخل منطقة صناعية وتجارية، مما يتيح للطلاب بيئة قريبة من سوق العمل وفرص تدريب حقيقية. ترتبط كليتنا بشبكة تعليمية لها فروع، وأصلها مرتبط بمنطقة سخنين، مما يمنحنا خبرة متراكمة في التعليم الهندسي التطبيقي.</p>
+            <div class="navbar">
+                <div class="logo">
+                    <h1 data-key="college_name">كلية قلب الجليل للهندسيين</h1>
+                    <p data-key="college_sub">كلية تقنية تطبيقية - عطروت القدس</p>
                 </div>
-                <div class="stats">
-                    <div class="stat-card">
-                        <i class="fas fa-user-graduate"></i>
-                        <h3>+1,800</h3>
-                        <p>طالب وطالبة</p>
+                <div class="menu-toggle" id="mobile-menu"><i class="fas fa-bars"></i></div>
+                <ul class="nav-links" id="nav-list">
+                    <li><a href="#home" data-key="nav_home">الرئيسية</a></li>
+                    <li><a href="#about" data-key="nav_about">عن الكلية</a></li>
+                    <li><a href="#programs" data-key="nav_programs">البرامج</a></li>
+                    <li><a href="#stories" data-key="nav_stories">قصص النجاح</a></li>
+                    <li><a href="#faculty" data-key="nav_faculty">الهيئة التدريسية</a></li>
+                    <li><a href="#admissions" data-key="nav_admissions">القبول</a></li>
+                    <li><a href="#constitution" data-key="nav_constitution">الدستور</a></li>
+                    <li><a href="#contact" data-key="nav_contact">اتصل بنا</a></li>
+                </ul>
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="ar">عربي</button>
+                    <button class="lang-btn" data-lang="he">עברית</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <!-- Hero -->
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="badge-practical" data-key="badge">كلية مهنية · تقنية · دبلوم عملي</div>
+                <h2 data-key="hero_title">قلب الجليل للهندسة التطبيقية</h2>
+                <p data-key="hero_desc">كلية قلب الجليل للهندسيين هي كلية مهنية/تقنية تركز على التعليم التطبيقي العملي لإعداد الطلاب لسوق العمل مباشرة. نمنح دبلوم هندسي معترف به، ومقرنا في عطروت – القدس.</p>
+                <div class="btn-group">
+                    <a href="#programs" class="btn btn-primary" data-key="hero_btn1">استكشف التخصصات</a>
+                    <a href="#stories" class="btn btn-outline-light" data-key="hero_btn2">قصص نجاح خريجينا</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About -->
+        <section id="about">
+            <div class="container">
+                <h2 class="section-title" data-key="about_title">عن كلية قلب الجليل للهندسيين</h2>
+                <div class="about-grid">
+                    <div class="about-text">
+                        <p data-key="about_p1">كلية قلب الجليل للهندسيين هي مؤسسة تعليمية مهنية/تقنية (كليات الهندسيين - Practical Engineering College)، وليست جامعة أكاديمية تقليدية. تركز كليتنا على التعليم التطبيقي العملي لتأهيل الطلاب بشكل مباشر لسوق العمل.</p>
+                        <p data-key="about_p2">نمنح دبلوم هندسي (هندسي/تكنولوجي) معترف به من قبل مجلس التعليم العالي الإسرائيلي (MALAG)، ومدة الدراسة تتراوح بين سنتين إلى ثلاث سنوات، مع تركيز كبير على التدريب العملي والمهارات التطبيقية.</p>
+                        <p data-key="about_p3">تقع الكلية في منطقة عطروت – القدس، داخل منطقة صناعية وتجارية، مما يتيح للطلاب بيئة قريبة من سوق العمل وفرص تدريب حقيقية. ترتبط كليتنا بشبكة تعليمية لها فروع، وأصلها مرتبط بمنطقة سخنين.</p>
                     </div>
-                    <div class="stat-card">
-                        <i class="fas fa-chalkboard-user"></i>
-                        <h3>70+</h3>
-                        <p>خبراء ومحاضرون عمليون</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-building"></i>
-                        <h3>4</h3>
-                        <p>تخصصات هندسية تطبيقية</p>
+                    <div class="stats">
+                        <div class="stat-card"><i class="fas fa-user-graduate"></i><h3>+1,800</h3><p data-key="stat1">طالب وطالبة</p></div>
+                        <div class="stat-card"><i class="fas fa-chalkboard-user"></i><h3>70+</h3><p data-key="stat2">خبراء ومحاضرون</p></div>
+                        <div class="stat-card"><i class="fas fa-building"></i><h3>4</h3><p data-key="stat3">تخصصات تطبيقية</p></div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Programs section: four separate specializations -->
-    <section id="programs" style="background-color: #f8fafc;">
-        <div class="container">
-            <h2 class="section-title">برامج الدبلوم الهندسي (تطبيقي)</h2>
-            <div class="programs-grid">
-                <div class="program-card">
-                    <i class="fas fa-hard-hat"></i>
-                    <h3>هندسي البناء</h3>
-                    <p>تخصص هندسي بناء متكامل يشمل إدارة المشاريع الإنشائية، تقنيات البناء الحديثة، المواد الهندسية، والسلامة المهنية. تدريب عملي في مواقع البناء الحقيقية.</p>
-                </div>
-                <div class="program-card">
-                    <i class="fas fa-palette"></i>
-                    <h3>هندسي معماري وتصميم ديكور داخلي</h3>
-                    <p>تخصص يجمع بين الهندسة المعمارية وفن التصميم الداخلي: التخطيط المعماري، التصميم الجمالي، الديكور، الإضاءة، وتوزيع الفراغات الداخلية للمباني.</p>
-                </div>
-                <div class="program-card">
-                    <i class="fas fa-car"></i>
-                    <h3>هندسي سيارات</h3>
-                    <p>تصميم أنظمة المركبات الحديثة، محركات الاحتراق الداخلي، السيارات الكهربائية والهجينة، أنظمة التحكم الإلكتروني، وتقنيات القيادة الذاتية. تدريب عملي في ورش مجهزة.</p>
-                </div>
-                <div class="program-card">
-                    <i class="fas fa-chalkboard"></i>
-                    <h3>سنة تحضيرية للهندسيين</h3>
-                    <p>برنامج تأسيسي شامل في الرياضيات، الفيزياء، الأساسيات الهندسية واللغة الإنجليزية. يضمن للطلاب الانتقال السلس إلى التخصصات الهندسية التطبيقية.</p>
+        <!-- Programs (4 separate) -->
+        <section id="programs" style="background-color:#f8fafc">
+            <div class="container">
+                <h2 class="section-title" data-key="programs_title">برامج الدبلوم الهندسي (تطبيقي)</h2>
+                <div class="programs-grid">
+                    <div class="program-card"><i class="fas fa-hard-hat"></i><h3 data-key="prog1_title">هندسي البناء</h3><p data-key="prog1_desc">تخصص هندسي بناء متكامل يشمل إدارة المشاريع الإنشائية، تقنيات البناء الحديثة، المواد الهندسية، والسلامة المهنية. تدريب عملي في مواقع البناء الحقيقية.</p></div>
+                    <div class="program-card"><i class="fas fa-palette"></i><h3 data-key="prog2_title">هندسي معماري وتصميم ديكور داخلي</h3><p data-key="prog2_desc">تخصص يجمع بين الهندسة المعمارية وفن التصميم الداخلي: التخطيط المعماري، التصميم الجمالي، الديكور، الإضاءة، وتوزيع الفراغات الداخلية للمباني.</p></div>
+                    <div class="program-card"><i class="fas fa-car"></i><h3 data-key="prog3_title">هندسي سيارات</h3><p data-key="prog3_desc">تصميم أنظمة المركبات الحديثة، محركات الاحتراق الداخلي، السيارات الكهربائية والهجينة، أنظمة التحكم الإلكتروني، وتقنيات القيادة الذاتية.</p></div>
+                    <div class="program-card"><i class="fas fa-chalkboard"></i><h3 data-key="prog4_title">سنة تحضيرية للهندسيين</h3><p data-key="prog4_desc">برنامج تأسيسي شامل في الرياضيات، الفيزياء، الأساسيات الهندسية واللغة الإنجليزية. يضمن للطلاب الانتقال السلس إلى التخصصات الهندسية التطبيقية.</p></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Success Stories Section - Updated: Third story now for preparatory year -->
-    <section id="stories" style="background-color: #ffffff;">
-        <div class="container">
-            <h2 class="section-title">قصص نجاح طلابنا</h2>
-            <div class="stories-grid">
-                <!-- Story 1: Civil Engineering -->
-                <div class="story-card">
-                    <img class="story-img" src="https://randomuser.me/api/portraits/women/68.jpg" alt="خريجة هندسي بناء">
-                    <div class="story-content">
-                        <div class="quote-icon"><i class="fas fa-quote-right"></i></div>
-                        <h3>ليان مصاروة</h3>
-                        <div class="story-tag">هندسي البناء – دفعة 2022</div>
-                        <p>"بعد تخرجي من كلية قلب الجليل، التحقت فوراً بإحدى كبرى شركات المقاولات في القدس. بفضل التدريب العملي الذي تلقيناه في مواقع البناء الحقيقية، تمكنت من إدارة مشاريع بقيمة ملايين الشواقل خلال سنتين فقط. الكلية لم تمنحني شهادة فقط، بل منحتني الثقة والمهارات القيادية."</p>
-                        <p style="margin-top: 1rem; font-weight: 500; color: #1b4f6e;">اليوم: مديرة مشاريع في شركة "البناية الحديثة"</p>
-                    </div>
-                </div>
-                <!-- Story 2: Architectural & Interior Design -->
-                <div class="story-card">
-                    <img class="story-img" src="https://randomuser.me/api/portraits/men/32.jpg" alt="خريج هندسي معماري">
-                    <div class="story-content">
-                        <div class="quote-icon"><i class="fas fa-quote-right"></i></div>
-                        <h3>أمير حجازي</h3>
-                        <div class="story-tag">هندسي معماري وتصميم ديكور داخلي – دفعة 2023</div>
-                        <p>"دراستي في الكلية كانت نقلة نوعية؛ جمعت بين الرؤية المعمارية وتفاصيل التصميم الداخلي. خلال فترة التدريب، صممت مساحات لمكاتب ومقاهٍ في عطروت، وبعد التخرج مباشرة افتتحت مكتبي الخاص للتصميم الداخلي. اليوم أعمل مع عملاء من جميع أنحاء البلاد، والفضل يعود للمنهج التطبيقي والأساتذة المتميزين."</p>
-                        <p style="margin-top: 1rem; font-weight: 500; color: #1b4f6e;">مؤسس ومدير "أمير ديزاين ستوديو"</p>
-                    </div>
-                </div>
-                <!-- Story 3: Preparatory Year (modified from automotive) -->
-                <div class="story-card">
-                    <img class="story-img" src="https://randomuser.me/api/portraits/men/45.jpg" alt="خريج السنة التحضيرية">
-                    <div class="story-content">
-                        <div class="quote-icon"><i class="fas fa-quote-right"></i></div>
-                        <h3>رامي شحادة</h3>
-                        <div class="story-tag">السنة التحضيرية للهندسيين – دفعة 2021</div>
-                        <p>"قبل التحاقي بالسنة التحضيرية، كنت أعاني من ضعف في أساسيات الرياضيات والفيزياء. البرنامج المكثف في الكلية أعاد بناء معرفتي من الصفر، وأهلني لاجتياز متطلبات التخصص بنجاح. بفضل هذه السنة التأسيسية، انتقلت بسهولة إلى تخصص هندسي السيارات والتحقت لاحقاً ببرامج متقدمة. السنة التحضيرية لم تكن مجرد تمهيد، بل كانت نقطة التحول الحقيقية في مسيرتي الأكاديمية والمهنية."</p>
-                        <p style="margin-top: 1rem; font-weight: 500; color: #1b4f6e;">اليوم: مهندس سيارات أول في ورش متخصصة بالقدس</p>
-                    </div>
+        <!-- Success Stories (3 stories) -->
+        <section id="stories">
+            <div class="container">
+                <h2 class="section-title" data-key="stories_title">قصص نجاح طلابنا</h2>
+                <div class="stories-grid">
+                    <div class="story-card"><img class="story-img" src="https://randomuser.me/api/portraits/women/68.jpg"><div class="story-content"><div class="quote-icon"><i class="fas fa-quote-right"></i></div><h3 data-key="story1_name">ليان مصاروة</h3><div class="story-tag" data-key="story1_tag">هندسي البناء – دفعة 2022</div><p data-key="story1_text">"بعد تخرجي من كلية قلب الجليل، التحقت فوراً بإحدى كبرى شركات المقاولات في القدس. بفضل التدريب العملي، تمكنت من إدارة مشاريع بقيمة ملايين الشواقل خلال سنتين."</p><p style="margin-top:1rem; font-weight:500; color:#1b4f6e" data-key="story1_role">مديرة مشاريع في شركة "البناية الحديثة"</p></div></div>
+                    <div class="story-card"><img class="story-img" src="https://randomuser.me/api/portraits/men/32.jpg"><div class="story-content"><div class="quote-icon"><i class="fas fa-quote-right"></i></div><h3 data-key="story2_name">أمير حجازي</h3><div class="story-tag" data-key="story2_tag">هندسي معماري وتصميم ديكور داخلي – دفعة 2023</div><p data-key="story2_text">"دراستي جمعت بين الرؤية المعمارية وتفاصيل التصميم الداخلي. بعد التخرج افتتحت مكتبي الخاص، والفضل يعود للمنهج التطبيقي."</p><p style="margin-top:1rem; font-weight:500; color:#1b4f6e" data-key="story2_role">مؤسس "أمير ديزاين ستوديو"</p></div></div>
+                    <div class="story-card"><img class="story-img" src="https://randomuser.me/api/portraits/men/45.jpg"><div class="story-content"><div class="quote-icon"><i class="fas fa-quote-right"></i></div><h3 data-key="story3_name">رامي شحادة</h3><div class="story-tag" data-key="story3_tag">السنة التحضيرية للهندسيين – دفعة 2021</div><p data-key="story3_text">"السنة التحضيرية أعادت بناء معرفتي من الصفر، وأهلتني لاجتياز متطلبات التخصص بنجاح. كانت نقطة التحول الحقيقية في مسيرتي."</p><p style="margin-top:1rem; font-weight:500; color:#1b4f6e" data-key="story3_role">مهندس سيارات أول في ورش متخصصة بالقدس</p></div></div>
                 </div>
             </div>
-            <p style="text-align: center; margin-top: 2rem; font-size: 1rem; color: #4a627a;">والمزيد من قصص النجاح ينتظرك... كن أنت القصة القادمة!</p>
-        </div>
-    </section>
+        </section>
 
-    <!-- Faculty Section - updated: Zein Al-Abideen now responsible for Construction, Saber for Automotive -->
-    <section id="faculty" style="background-color: #f8fafc;">
-        <div class="container">
-            <h2 class="section-title">أعضاء هيئة التدريس (خبراء تطبيقيون)</h2>
-            <div class="faculty-grid">
-                <div class="faculty-card">
-                    <img src="https://randomuser.me/api/portraits/men/15.jpg" alt="صابر">
-                    <h4>صابر</h4>
-                    <p>أستاذ هندسي السيارات والميكاترونكس</p>
-                    <small>خبير في أنظمة السيارات الكهربائية، تشخيص الأعطال، وتقنيات القيادة الذاتية. مدرب معتمد في الصيانة العملية.</small>
-                </div>
-                <div class="faculty-card">
-                    <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="زين العابدين">
-                    <h4>زين العابدين</h4>
-                    <p>أستاذ هندسي البناء والعمارة</p>
-                    <small>خبير في التصميم المعماري المستدام، إدارة المشاريع الإنشائية، والمواد الهندسية الحديثة. حاصل على جائزة التميز في التعليم التقني.</small>
-                </div>
-                <div class="faculty-card">
-                    <img src="https://randomuser.me/api/portraits/men/68.jpg" alt="محمد">
-                    <h4>محمد</h4>
-                    <p>منسق السنة التحضيرية والتدريب العملي</p>
-                    <small>خبير في تطوير المناهج التأهيلية، تأسيس الطلاب في الرياضيات والفيزياء، وربطهم بسوق العمل في منطقة القدس الصناعية.</small>
+        <!-- Faculty (roles swapped: Saber -> Automotive, Zein -> Construction) -->
+        <section id="faculty" style="background-color:#f8fafc">
+            <div class="container">
+                <h2 class="section-title" data-key="faculty_title">أعضاء هيئة التدريس</h2>
+                <div class="faculty-grid">
+                    <div class="faculty-card"><img src="https://randomuser.me/api/portraits/men/15.jpg"><h4>صابر</h4><p data-key="fac1_role">أستاذ هندسي السيارات والميكاترونكس</p><small data-key="fac1_desc">خبير في أنظمة السيارات الكهربائية وتشخيص الأعطال.</small></div>
+                    <div class="faculty-card"><img src="https://randomuser.me/api/portraits/men/42.jpg"><h4>زين العابدين</h4><p data-key="fac2_role">أستاذ هندسي البناء والعمارة</p><small data-key="fac2_desc">خبير في التصميم المعماري المستدام وإدارة المشاريع.</small></div>
+                    <div class="faculty-card"><img src="https://randomuser.me/api/portraits/men/68.jpg"><h4>محمد</h4><p data-key="fac3_role">منسق السنة التحضيرية والتدريب العملي</p><small data-key="fac3_desc">خبير في تأسيس الطلاب وربطهم بسوق العمل.</small></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Admissions Section - without exam requirement, with example -->
-    <section id="admissions" style="background-color: #f0f4f8;">
-        <div class="container">
-            <h2 class="section-title">القبول والتسجيل - دبلوم هندسي عملي</h2>
-            <div class="admission-box">
-                <div class="admission-info">
-                    <h3>شروط القبول</h3>
-                    <ul>
-                        <li><i class="fas fa-check-circle"></i> شهادة إتمام 12 سنة (بجروت أو ما يعادلها) - بدون شرط معدل</li>
-                        <li><i class="fas fa-check-circle"></i> مقابلة شخصية لقياس الدافعية العملية</li>
-                        <li><i class="fas fa-check-circle"></i> السنة التحضيرية متاحة لرفع المستوى التأهيلي</li>
-                    </ul>
-                    <h3 style="margin-top: 1.5rem;">الرسوم الدراسية (حسب دستور الكلية)</h3>
-                    <p style="margin-bottom: 0.5rem; font-weight: 500;"><i class="fas fa-info-circle"></i> مثال: يتم دفع الرسوم الدراسية على قسطين كالتالي:</p>
-                    <ul>
-                        <li><i class="fas fa-shekel-sign"></i> القسط الأول: 7,500 شيكل حتى 15 يناير 2026</li>
-                        <li><i class="fas fa-shekel-sign"></i> القسط الثاني: 7,500 شيكل حتى 15 مايو 2026</li>
-                        <li><i class="fas fa-hand-holding-usd"></i> خيارات دفع مرنة (نقداً أو شيكات) وفق المادة 19</li>
-                    </ul>
-                </div>
-                <div class="admission-info" style="text-align: center;">
-                    <i class="fas fa-file-alt" style="font-size: 3rem; color: #f9b43a;"></i>
-                    <p>التسجيل في الكلية يعني الالتزام بدستور الكلية الملزم (الفصل الثامن، المادة 38).</p>
-                    <button class="btn-apply" id="applyNowBtn"><i class="fas fa-pen-alt"></i> تقديم طلب قبول</button>
+        <!-- Admissions -->
+        <section id="admissions" style="background-color:#f0f4f8">
+            <div class="container">
+                <h2 class="section-title" data-key="admissions_title">القبول والتسجيل</h2>
+                <div class="admission-box">
+                    <div class="admission-info"><h3 data-key="admissions_cond_title">شروط القبول</h3><ul><li><i class="fas fa-check-circle"></i><span data-key="admission_cond1">شهادة إتمام 12 سنة (بدون شرط معدل)</span></li><li><i class="fas fa-check-circle"></i><span data-key="admission_cond2">مقابلة شخصية لقياس الدافعية العملية</span></li><li><i class="fas fa-check-circle"></i><span data-key="admission_cond3">السنة التحضيرية متاحة لرفع المستوى</span></li></ul><h3 data-key="fees_title">الرسوم الدراسية</h3><p data-key="fees_example"><i class="fas fa-info-circle"></i> مثال: يتم دفع الرسوم الدراسية على قسطين كالتالي:</p><ul><li><i class="fas fa-shekel-sign"></i><span data-key="install1">القسط الأول: 7,500 شيكل حتى 15 يناير 2026</span></li><li><i class="fas fa-shekel-sign"></i><span data-key="install2">القسط الثاني: 7,500 شيكل حتى 15 مايو 2026</span></li></ul></div>
+                    <div class="admission-info" style="text-align:center"><i class="fas fa-file-alt" style="font-size:3rem; color:#f9b43a"></i><p data-key="constitution_agree">التسجيل يعني الالتزام بدستور الكلية (المادة 38).</p><button class="btn-apply" id="applyNowBtn" data-key="apply_btn">تقديم طلب قبول</button></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- CONSTITUTION SECTION (condensed but legally binding) -->
-    <section id="constitution" class="constitution-section">
-        <div class="container">
-            <h2 class="section-title">دستور الكلية واللوائح الملزمة</h2>
-            <div class="constitution-container">
-                <p style="margin-bottom: 1.5rem; font-weight: 500; background: #fef0d6; padding: 0.8rem; border-radius: 24px; text-align: center;">هذا الدستور هو وثيقة قانونية ملزمة، وجزء لا يتجزأ من عقد الالتحاق بالكلية. بالتسجيل أو حضور أي محاضرة أو دفع أي رسم، يُقر الطالب بقبول جميع البنود دون تحفظ.</p>
-                <div class="fine-print">(الدستور الكامل متوفر في 8 فصول و38 مادة، يشمل أحكام الحضور، الامتحانات، الالتزامات المالية، والعقوبات). <br>والله الموفق إلى سواء السبيل، وإليه المرجع والمآب. <br>باحترام: إدارة كلية قلب الجليل للهندسيين - عطروت، القدس</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section - with official hours and phone numbers -->
-    <section id="contact">
-        <div class="container">
-            <h2 class="section-title">تواصل مع الكلية</h2>
-            <div class="contact-wrapper">
-                <div class="contact-info">
-                    <h3>معلومات الاتصال</h3>
-                    <p><i class="fas fa-map-marker-alt accent-color"></i> منطقة عطروت الصناعية، القدس - إسرائيل</p>
-                    <p><i class="fas fa-phone-alt accent-color"></i> 0549302003 | 0549302005</p>
-                    <p><i class="fas fa-envelope accent-color"></i> info@galileeheart.ac.il</p>
-                    
-                    <h4 style="margin: 1rem 0 0.5rem 0;">ساعات الدوام الرسمية للكلية</h4>
-                    <table class="office-hours-table">
-                        <thead><tr><th>اليوم</th><th>من الساعة</th><th>إلى الساعة</th></tr></thead>
-                        <tbody>
-                            <tr><td>الجمعة</td><td>9:30</td><td>18:00</td></tr>
-                            <tr><td>السبت</td><td>9:30</td><td>16:30</td></tr>
-                            <tr><td>الاثنين</td><td>14:00</td><td>21:00</td></tr>
-                            <tr><td>الثلاثاء</td><td>14:00</td><td>21:00</td></tr>
-                            <tr><td>الأربعاء</td><td>14:00</td><td>21:00</td></tr>
-                        </tbody>
-                    </table>
-                    <div class="map-placeholder">
-                        <i class="fas fa-map" style="margin-left: 8px;"></i> خريطة تفاعلية - حرم الكلية في عطروت، بالقرب من المنطقة الصناعية
-                    </div>
-                </div>
-                <div class="contact-form">
-                    <h3>أرسل استفساراً</h3>
-                    <form id="contactForm">
-                        <div class="form-group"><input type="text" id="name" placeholder="الاسم الكامل" required></div>
-                        <div class="form-group"><input type="email" id="email" placeholder="البريد الإلكتروني" required></div>
-                        <div class="form-group"><input type="text" id="phone" placeholder="رقم الهاتف"></div>
-                        <div class="form-group"><textarea rows="4" id="message" placeholder="استفسارك حول برامج الدبلوم العملي..." required></textarea></div>
-                        <button type="submit"><i class="fas fa-paper-plane"></i> إرسال</button>
-                    </form>
+        <!-- Constitution (summary) -->
+        <section id="constitution" class="constitution-section">
+            <div class="container">
+                <h2 class="section-title" data-key="constitution_title">دستور الكلية واللوائح الملزمة</h2>
+                <div class="constitution-container">
+                    <p style="margin-bottom:1.5rem; background:#fef0d6; padding:0.8rem; border-radius:24px; text-align:center" data-key="constitution_notice">هذا الدستور وثيقة قانونية ملزمة. التسجيل يعني قبول جميع البنود.</p>
+                    <div class="fine-print" data-key="constitution_summary">(الدستور الكامل متوفر في 8 فصول و38 مادة، يشمل أحكام الحضور، الامتحانات، الالتزامات المالية، والعقوبات). <br>إدارة كلية قلب الجليل للهندسيين - عطروت، القدس</div>
                 </div>
             </div>
-        </div>
-    </section>
-</main>
+        </section>
 
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div>© 2025 كلية قلب الجليل للهندسيين - كلية تقنية تطبيقية - عطروت القدس</div>
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+        <!-- Contact -->
+        <section id="contact">
+            <div class="container">
+                <h2 class="section-title" data-key="contact_title">تواصل مع الكلية</h2>
+                <div class="contact-wrapper">
+                    <div class="contact-info"><h3 data-key="contact_info">معلومات الاتصال</h3><p><i class="fas fa-map-marker-alt accent-color"></i><span data-key="address">منطقة عطروت الصناعية، القدس</span></p><p><i class="fas fa-phone-alt accent-color"></i> 0549302003 | 0549302005</p><p><i class="fas fa-envelope accent-color"></i> info@galileeheart.ac.il</p><h4 data-key="hours_title">ساعات الدوام الرسمية</h4><table class="office-hours-table"><thead><tr><th data-key="day_fri">الجمعة</th><th data-key="day_sat">السبت</th><th data-key="day_mon">الاثنين</th><th data-key="day_tue">الثلاثاء</th><th data-key="day_wed">الأربعاء</th></tr></thead><tbody><tr><td>9:30 - 18:00</td><td>9:30 - 16:30</td><td>14:00 - 21:00</td><td>14:00 - 21:00</td><td>14:00 - 21:00</td></tr></tbody></table><div class="map-placeholder"><i class="fas fa-map"></i> <span data-key="map">خريطة تفاعلية - حرم الكلية في عطروت</span></div></div>
+                    <div class="contact-form"><h3 data-key="contact_form_title">أرسل استفساراً</h3><form id="contactForm"><div class="form-group"><input type="text" id="name" placeholder="الاسم الكامل" required></div><div class="form-group"><input type="email" id="email" placeholder="البريد الإلكتروني" required></div><div class="form-group"><input type="text" id="phone" placeholder="رقم الهاتف"></div><div class="form-group"><textarea rows="4" id="message" placeholder="استفسارك..." required></textarea></div><button type="submit"><i class="fas fa-paper-plane"></i> إرسال</button></form></div>
+                </div>
             </div>
-        </div>
-        <p style="margin-top: 1rem; font-size: 0.85rem;">معترف بها من قبل مجلس التعليم العالي الإسرائيلي | دبلوم هندسي معتمد | التسجيل يعني إقراراً بدستور الكلية (المادة 38)</p>
-    </div>
-</footer>
-
-<script>
-    const mobileMenu = document.getElementById('mobile-menu');
-    const navList = document.getElementById('nav-list');
-    mobileMenu.addEventListener('click', () => { navList.classList.toggle('active'); });
-    document.querySelectorAll('.nav-links li a').forEach(link => {
-        link.addEventListener('click', () => { navList.classList.remove('active'); });
-    });
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId === "#") return;
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                e.preventDefault();
-                targetElement.scrollIntoView({ behavior: 'smooth' });
+        </section>
+    </main>
+    <footer>
+        <div class="container"><div class="footer-content"><div>© 2025 <span data-key="footer_name">كلية قلب الجليل للهندسيين</span> - <span data-key="footer_tag">كلية تقنية تطبيقية - عطروت القدس</span></div><div class="social-icons"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-instagram"></i></a></div></div><p style="margin-top:1rem; font-size:0.85rem" data-key="footer_note">معترف بها من قبل مجلس التعليم العالي الإسرائيلي | دبلوم هندسي معتمد | التسجيل يعني إقراراً بدستور الكلية</p></div>
+    </footer>
+    <script>
+        // Multi-language dictionary
+        const translations = {
+            ar: { /* Already default in HTML, but we keep minimal overrides */ },
+            he: {
+                college_name: "מכללת לב הגליל להנדסאים", college_sub: "מכללה טכנולוגית יישומית - עטרות ירושלים",
+                nav_home: "ראשי", nav_about: "אודות", nav_programs: "תוכניות", nav_stories: "סיפורי הצלחה", nav_faculty: "סגל", nav_admissions: "קבלה", nav_constitution: "חוקה", nav_contact: "צור קשר",
+                badge: "מכללה מקצועית · טכנולוגית · דיפלומה מעשית", hero_title: "לב הגליל להנדסה יישומית", hero_desc: "מכללת לב הגליל להנדסאים היא מכללה מקצועית/טכנולוגית המתמקדת בחינוך יישומי להכנת בוגרים ישירות לשוק העבודה. אנו מעניקים דיפלומת הנדסאי מוכרת, הקמפוס שלנו בעטרות – ירושלים.",
+                hero_btn1: "לתוכניות המעשיות", hero_btn2: "סיפורי הצלחה",
+                about_title: "אודות מכללת לב הגליל להנדסאים", about_p1: "מכללת לב הגליל להנדסאים היא מוסד חינוכי מקצועי/טכנולוגי (Practical Engineering College), לא אוניברסיטה אקדמית מסורתית. המכללה מתמקדת בחינוך יישומי להכשרת סטודנטים ישירות לשוק העבודה.",
+                about_p2: "אנו מעניקים דיפלומת הנדסאי מוכרת על ידי המועצה להשכלה גבוהה (MALAG), משך הלימודים שנתיים עד שלוש, עם דגש על הכשרה מעשית.", about_p3: "המכללה ממוקמת באזור התעשייה עטרות – ירושלים, בסביבה תעשייתית ומסחרית, המאפשרת לסטודנטים סביבה קרובה לשוק העבודה. המכללה מחוברת לרשת חינוכית עם סניפים, שמקורה באזור סכנין.",
+                stat1: "סטודנטים", stat2: "מומחים ומרצים", stat3: "תוכניות יישומיות",
+                programs_title: "תוכניות דיפלומת הנדסאי (יישומי)", prog1_title: "הנדסאי בניין", prog1_desc: "התמחות משלבת בניה, ניהול פרויקטים, טכנולוגיות בנייה מודרניות, חומרים הנדסיים ובטיחות.", prog2_title: "הנדסאי אדריכלות ועיצוב פנים", prog2_desc: "תכנון אדריכלי, עיצוב אסתטי, תאורה, חללי פנים ודקורציה.", prog3_title: "הנדסאי רכב", prog3_desc: "מערכות רכב מודרניות, מנועי בעירה פנימית, רכב חשמלי והיברידי, מערכות בקרה אלקטרוניות.", prog4_title: "שנת מכינה להנדסאים", prog4_desc: "תכנית יסוד במתמטיקה, פיזיקה, יסודות הנדסיים ואנגלית.",
+                stories_title: "סיפורי הצלחה", story1_name: "ליאן מסארווה", story1_tag: "הנדסאי בניין – מחזור 2022", story1_text: "לאחר סיום הלימודים התקבלתי מיד לחברת קבלנות גדולה בירושלים. בזכות ההכשרה המעשית ניהלתי פרויקטים בהיקף מיליונים.", story1_role: "מנהלת פרויקטים בחברת 'הבנייה המודרנית'",
+                story2_name: "אמיר חג'אזי", story2_tag: "הנדסאי אדריכלות ועיצוב פנים – 2023", story2_text: "הלימודים שילבו חזון אדריכלי ופרטי עיצוב פנים. לאחר הלימודים פתחתי סטודיו משלי.", story2_role: "מייסד 'אמיר דיזיין סטודיו'",
+                story3_name: "ראמי שחאדה", story3_tag: "שנת מכינה להנדסאים – מחזור 2021", story3_text: "שנת המכינה בנתה מחדש את הידע שלי מאפס, והכשירה אותי להתקדם בהצלחה. הייתה נקודת המפנה האמיתית.", story3_role: "הנדסאי רכב ראשי במוסכים מומחים בירושלים",
+                faculty_title: "סגל ההוראה", fac1_role: "פרופסור להנדסאי רכב ומכטרוניקה", fac1_desc: "מומחה במערכות רכב חשמלי ואבחון תקלות.", fac2_role: "פרופסור להנדסאי בניין ואדריכלות", fac2_desc: "מומחה בתכנון בר קיימא וניהול פרויקטים.", fac3_role: "רכז שנת מכינה והכשרה מעשית", fac3_desc: "מומחה בבסיס לסטודנטים וחיבור לשוק העבודה.",
+                admissions_title: "קבלה ורישום", admissions_cond_title: "תנאי קבלה", admission_cond1: "תעודת סיום 12 שנה (ללא ציון)", admission_cond2: "ראיון אישי למדידת מוטיבציה מעשית", admission_cond3: "שנת מכינה זמינה להעלאת הרמה", fees_title: "שכר לימוד", fees_example: "דוגמה: שכר הלימוד משולם בשני תשלומים:", install1: "תשלום ראשון: 7,500 ש"ח עד 15 בינואר 2026", install2: "תשלום שני: 7,500 ש"ח עד 15 במאי 2026", constitution_agree: "ההרשמה מחייבת את חוקת המכללה (סעיף 38).", apply_btn: "הגשת מועמדות",
+                constitution_title: "חוקת המכללה", constitution_notice: "חוקה זו היא מסמך משפטי מחייב. ההרשמה מהווה הסכמה לכל הסעיפים.", constitution_summary: "(החוקה המלאה כוללת 8 פרקים ו-38 סעיפים, הכוללים הוראות נוכחות, בחינות, התחייבויות כספיות וסנקציות).<br>הנהלת מכללת לב הגליל להנדסאים - עטרות, ירושלים",
+                contact_title: "צור קשר", contact_info: "פרטי התקשרות", address: "אזור התעשייה עטרות, ירושלים", hours_title: "שעות פעילות רשמיות", day_fri: "שישי", day_sat: "שבת", day_mon: "שני", day_tue: "שלישי", day_wed: "רביעי", map: "מפה אינטראקטיבית - קמפוס המכללה בעטרות", contact_form_title: "שלח פנייה", footer_name: "מכללת לב הגליל להנדסאים", footer_tag: "מכללה טכנולוגית יישומית - עטרות ירושלים", footer_note: "מוכרת על ידי המועצה להשכלה גבוהה | דיפלומת הנדסאי מוכרת | הרשמה מהווה הסכמה לחוקת המכללה"
+            },
+            en: {
+                college_name: "Galilee Heart College for Engineers", college_sub: "Practical Engineering College - Atarot, Jerusalem",
+                nav_home: "Home", nav_about: "About", nav_programs: "Programs", nav_stories: "Success Stories", nav_faculty: "Faculty", nav_admissions: "Admissions", nav_constitution: "Constitution", nav_contact: "Contact",
+                badge: "Professional · Technical · Practical Diploma", hero_title: "Galilee Heart for Applied Engineering", hero_desc: "Galilee Heart College for Engineers is a professional/technical college focusing on hands-on education to prepare students directly for the job market. We offer a recognized practical engineering diploma, located in Atarot – Jerusalem.",
+                hero_btn1: "Explore Programs", hero_btn2: "Success Stories",
+                about_title: "About Galilee Heart College for Engineers", about_p1: "Galilee Heart College for Engineers is a Practical Engineering College, not a traditional academic university. We focus on applied education to directly qualify students for the workforce.",
+                about_p2: "We award a recognized Practical Engineering Diploma (MALAG accredited), study duration 2-3 years, with strong emphasis on practical training.", about_p3: "Located in the Atarot industrial zone – Jerusalem, close to real work environments. Our college is part of an educational network originally from Sakhnin.",
+                stat1: "Students", stat2: "Experts & Lecturers", stat3: "Applied Tracks",
+                programs_title: "Practical Engineering Diploma Programs", prog1_title: "Construction Engineering", prog1_desc: "Integrated construction engineering: project management, modern building techniques, materials, and safety.", prog2_title: "Architecture & Interior Design", prog2_desc: "Architectural planning, aesthetic design, lighting, interior space distribution, and decoration.", prog3_title: "Automotive Engineering", prog3_desc: "Modern vehicle systems, internal combustion engines, electric/hybrid cars, electronic control systems.", prog4_title: "Preparatory Year for Engineers", prog4_desc: "Foundation in math, physics, engineering basics, and English. Smooth transition to specialized tracks.",
+                stories_title: "Student Success Stories", story1_name: "Lyan Masrawa", story1_tag: "Construction Eng. – Class 2022", story1_text: "After graduation, I immediately joined a major contracting company in Jerusalem. Thanks to hands-on training, I managed multi-million shekel projects within two years.", story1_role: "Project Manager at 'Modern Building Co.'",
+                story2_name: "Ameer Hijazi", story2_tag: "Architecture & Interior Design – 2023", story2_text: "My studies combined architectural vision and interior details. After graduation, I opened my own design studio.", story2_role: "Founder of 'Ameer Design Studio'",
+                story3_name: "Rami Shihadeh", story3_tag: "Preparatory Year – Class 2021", story3_text: "The preparatory year rebuilt my knowledge from scratch and qualified me to succeed in advanced studies. It was a real turning point.", story3_role: "Senior Automotive Engineer at specialized Jerusalem workshops",
+                faculty_title: "Teaching Faculty", fac1_role: "Professor of Automotive & Mechatronics", fac1_desc: "Expert in electric vehicle systems and diagnostics.", fac2_role: "Professor of Construction & Architecture", fac2_desc: "Expert in sustainable design and project management.", fac3_role: "Preparatory Year Coordinator", fac3_desc: "Expert in student foundation and labor market integration.",
+                admissions_title: "Admissions & Registration", admissions_cond_title: "Admission Requirements", admission_cond1: "12th grade certificate (no grade requirement)", admission_cond2: "Personal interview for practical motivation", admission_cond3: "Preparatory year available", fees_title: "Tuition Fees", fees_example: "Example: Tuition is paid in two installments:", install1: "First installment: 7,500 NIS by Jan 15, 2026", install2: "Second installment: 7,500 NIS by May 15, 2026", constitution_agree: "Registration implies acceptance of the college constitution (Article 38).", apply_btn: "Apply Now",
+                constitution_title: "College Constitution", constitution_notice: "This constitution is a binding legal document. Registration constitutes full acceptance.", constitution_summary: "(Full constitution contains 8 chapters and 38 articles, covering attendance, exams, financial obligations, and penalties).<br>Galilee Heart College for Engineers Administration - Atarot, Jerusalem",
+                contact_title: "Contact Us", contact_info: "Contact Information", address: "Atarot Industrial Zone, Jerusalem", hours_title: "Official Office Hours", day_fri: "Friday", day_sat: "Saturday", day_mon: "Monday", day_tue: "Tuesday", day_wed: "Wednesday", map: "Interactive map - College campus in Atarot", contact_form_title: "Send an Inquiry", footer_name: "Galilee Heart College for Engineers", footer_tag: "Practical Engineering College - Atarot Jerusalem", footer_note: "Recognized by the Israeli Higher Education Council | Recognized Practical Engineering Diploma | Registration implies acceptance of the college constitution"
             }
+        };
+
+        function setLanguage(lang) {
+            document.body.className = `lang-${lang}`;
+            document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (translations[lang] && translations[lang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translations[lang][key];
+                    } else {
+                        el.innerText = translations[lang][key];
+                    }
+                }
+            });
+            localStorage.setItem('collegeLang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
         });
-    });
-    const contactForm = document.getElementById('contactForm');
-    if(contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value.trim();
-            if(name) { alert(`شكراً لك ${name}، تم استلام استفسارك. سيتواصل معك فريق القبول في كلية قلب الجليل (عطروت) خلال ساعات الدوام الرسمية.`); contactForm.reset(); }
-            else { alert('الرجاء إدخال الاسم الكامل.'); }
+        const savedLang = localStorage.getItem('collegeLang');
+        if (savedLang && translations[savedLang]) setLanguage(savedLang);
+        else setLanguage('ar');
+
+        // Mobile menu
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+        mobileMenu.addEventListener('click', () => navList.classList.toggle('active'));
+        document.querySelectorAll('.nav-links li a').forEach(link => link.addEventListener('click', () => navList.classList.remove('active')));
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === "#") return;
+                const target = document.querySelector(targetId);
+                if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+            });
         });
-    }
-    const applyBtn = document.getElementById('applyNowBtn');
-    if(applyBtn) {
-        applyBtn.addEventListener('click', () => { alert("نرحب باهتمامك! التقديم للكلية التقنية يعني إقراراً بدستور الكلية (المادة 38). سيتم توجيهك إلى بوابة القبول الإلكترونية قريباً."); });
-    }
-</script>
+        document.getElementById('contactForm')?.addEventListener('submit', e => {
+            e.preventDefault(); alert("شكراً، تم استلام استفسارك. / תודה, פנייתך התקבלה / Thank you, your inquiry has been received.");
+            e.target.reset();
+        });
+        document.getElementById('applyNowBtn')?.addEventListener('click', () => alert("سيتم توجيهك إلى بوابة القبول الإلكترونية قريباً."));
+    </script>
 </body>
 </html>
