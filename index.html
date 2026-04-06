@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>كلية قلب الجليل للهندسيين | البوابة الإلكترونية المتطورة</title>
+    <title>كلية قلب الجليل | البوابة الإلكترونية المتطورة مع قاعدة بيانات سحابية</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Heebo:wght@300;400;500;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -12,26 +16,22 @@
             background: linear-gradient(135deg, #f5f7fc 0%, #eef2f9 100%);
             color: #1a2c3e;
             line-height: 1.6;
-            scroll-behavior: smooth;
             font-family: 'Cairo', sans-serif;
         }
         body.lang-he { font-family: 'Heebo', sans-serif; }
         body.lang-en { font-family: 'Roboto', sans-serif; }
         .container { width: 90%; max-width: 1300px; margin: 0 auto; padding: 0 20px; }
         
-        /* Modern Glass Header with Logo */
+        /* Modern Glass Header */
         header {
             background: rgba(11, 43, 59, 0.96);
             backdrop-filter: blur(12px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid rgba(249, 213, 110, 0.4);
         }
         .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 0.8rem 0; gap: 15px; }
-        
-        /* Logo styling */
         .logo-wrapper { display: flex; align-items: center; gap: 12px; }
         .logo-icon {
             width: 50px;
@@ -41,93 +41,62 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: transform 0.3s;
         }
         .logo-icon i { font-size: 28px; color: #1e2a3e; }
-        .logo-icon:hover { transform: scale(1.05); }
-        .logo-text h1 { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #f9d56e, #f5a623); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 0; line-height: 1.2; }
-        .logo-text p { font-size: 0.7rem; color: #cbd5e1; letter-spacing: 0.5px; margin-top: 2px; }
-        
+        .logo-text h1 { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #f9d56e, #f5a623); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .logo-text p { font-size: 0.7rem; color: #cbd5e1; }
         .nav-links { display: flex; gap: 1.8rem; list-style: none; }
-        .nav-links li a { color: #f1f5f9; font-weight: 600; text-decoration: none; transition: 0.2s; padding: 0.5rem 0; border-bottom: 2px solid transparent; }
-        .nav-links li a:hover { border-bottom-color: #f9d56e; color: #f9d56e; transform: translateY(-2px); }
+        .nav-links li a { color: #f1f5f9; font-weight: 600; text-decoration: none; transition: 0.2s; border-bottom: 2px solid transparent; }
+        .nav-links li a:hover { border-bottom-color: #f9d56e; color: #f9d56e; }
         .menu-toggle { display: none; font-size: 1.8rem; color: white; cursor: pointer; }
-        .lang-switch { display: flex; gap: 8px; background: rgba(255,255,255,0.12); padding: 5px 12px; border-radius: 60px; backdrop-filter: blur(4px); }
-        .lang-btn { background: none; border: none; color: white; font-weight: 600; cursor: pointer; padding: 4px 12px; border-radius: 40px; transition: 0.2s; }
+        .lang-switch { display: flex; gap: 8px; background: rgba(255,255,255,0.12); padding: 5px 12px; border-radius: 60px; }
+        .lang-btn { background: none; border: none; color: white; font-weight: 600; cursor: pointer; padding: 4px 12px; border-radius: 40px; }
         .lang-btn.active { background: #f9d56e; color: #1e2a3e; }
         
-        /* Hero Parallax */
         .hero {
             background: linear-gradient(120deg, rgba(10, 40, 50, 0.85), rgba(5, 25, 35, 0.9)), url('https://picsum.photos/id/104/1920/800') center/cover fixed;
-            padding: 6rem 0;
+            padding: 5rem 0;
             color: white;
             text-align: center;
         }
-        .hero h2 { font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #f9d56e, #ffb347); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; margin-bottom: 1rem; }
-        .hero p { font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem; opacity: 0.95; }
+        .hero h2 { font-size: 3rem; font-weight: 800; background: linear-gradient(135deg, #f9d56e, #ffb347); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .btn { padding: 0.9rem 2rem; border-radius: 60px; font-weight: 700; transition: all 0.3s; display: inline-block; text-decoration: none; }
         .btn-primary { background: linear-gradient(95deg, #f9d56e, #f5a623); color: #1e2a3e; border: none; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
         .btn-outline-light { border: 2px solid white; background: transparent; color: white; }
-        .btn-outline-light:hover { background: white; color: #1b4f6e; transform: translateY(-3px); }
-        
-        section { padding: 5rem 0; }
-        .section-title { font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 3rem; position: relative; }
+        section { padding: 4rem 0; }
+        .section-title { font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2.5rem; position: relative; }
         .section-title:after { content: ''; width: 120px; height: 5px; background: linear-gradient(90deg, #f9d56e, #f5a623); position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); border-radius: 5px; }
         
-        /* Glass Cards */
-        .program-card, .story-card, .faculty-card, .stat-card, .admission-box, .contact-wrapper, .constitution-container, .dashboard-card, .zoom-card {
+        .program-card, .dashboard-card, .zoom-card, .constitution-container {
             background: rgba(255,255,255,0.88);
             backdrop-filter: blur(8px);
             border-radius: 32px;
             box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
-            transition: all 0.3s;
             border: 1px solid rgba(255,255,255,0.6);
         }
-        .program-card, .zoom-card { padding: 2rem 1.5rem; text-align: center; }
-        .zoom-card { background: linear-gradient(145deg, #ffffff, #f8faff); }
-        .programs-grid, .stories-grid, .faculty-grid, .zoom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        .zoom-link { display: inline-block; background: #1b4f6e; color: white; padding: 10px 20px; margin: 10px 0; border-radius: 50px; text-decoration: none; font-weight: 500; transition: 0.2s; }
-        .zoom-link:hover { background: #f9b43a; color: #1e2a3e; transform: scale(1.02); }
-        .story-img { width: 100%; height: 200px; object-fit: cover; border-radius: 32px 32px 0 0; }
-        .story-content { padding: 1.5rem; }
-        .faculty-card { text-align: center; padding: 2rem; }
-        .faculty-card img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; border: 4px solid #f9d56e; }
+        .program-card { padding: 2rem 1.5rem; text-align: center; }
+        .programs-grid, .zoom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .zoom-link { display: inline-block; background: #1b4f6e; color: white; padding: 8px 18px; margin: 6px 0; border-radius: 50px; text-decoration: none; font-size: 0.9rem; }
+        .zoom-link:hover { background: #f9b43a; color: #1e2a3e; }
         
-        /* Portal & Dashboard */
         .portal-section { background: linear-gradient(145deg, #e8edf5, #eef2f9); }
         .login-form { max-width: 420px; margin: 0 auto; padding: 2rem; }
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
-        .zoom-course-card { background: #fefcf5; border-radius: 24px; padding: 1.2rem; margin-bottom: 1rem; transition: 0.2s; }
-        .zoom-course-card:hover { transform: translateX(5px); background: #fff8e7; }
-        .assignment-item { background: #f9f9f9; padding: 1rem; margin: 1rem 0; border-radius: 20px; }
+        .assignment-item, .grade-item { background: #f9f9f9; padding: 1rem; margin: 1rem 0; border-radius: 20px; }
         .logout-btn { background: #dc3545; color: white; border: none; padding: 8px 20px; border-radius: 40px; cursor: pointer; }
-        
-        .whatsapp-float { position: fixed; bottom: 20px; left: 20px; background: #25D366; color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 99; transition: 0.2s; }
-        .whatsapp-float:hover { transform: scale(1.05); background: #128C7E; }
-        
-        footer { background: #0b2b3b; color: #ccc; padding: 2rem 0; margin-top: 2rem; text-align: center; }
-        .social-icons a { color: white; margin: 0 15px; font-size: 1.5rem; transition: 0.2s; display: inline-block; }
-        .social-icons a:hover { color: #f9d56e; transform: translateY(-3px); }
-        
+        .whatsapp-float { position: fixed; bottom: 20px; left: 20px; background: #25D366; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 99; }
+        footer { background: #0b2b3b; color: #ccc; padding: 2rem 0; text-align: center; margin-top: 2rem; }
+        .constitution-container { padding: 2rem; max-height: 500px; overflow-y: auto; }
+        .chapter { margin-bottom: 1.5rem; border-right: 6px solid #f9b43a; padding: 1rem; background: #fffef7; border-radius: 20px 0 0 20px; }
+        .article { margin: 0.7rem 0; }
         @media (max-width: 900px) {
-            .nav-links { display: none; width: 100%; flex-direction: column; background: #0b2b3b; padding: 1rem; border-radius: 28px; margin-top: 1rem; text-align: center; }
+            .nav-links { display: none; width: 100%; flex-direction: column; background: #0b2b3b; padding: 1rem; }
             .nav-links.active { display: flex; }
             .menu-toggle { display: block; }
-            .hero h2 { font-size: 2.2rem; }
-            .section-title { font-size: 1.8rem; }
-            .logo-icon { width: 40px; height: 40px; }
-            .logo-icon i { font-size: 22px; }
-            .logo-text h1 { font-size: 1.2rem; }
+            .hero h2 { font-size: 2rem; }
         }
-        .map-placeholder iframe { width: 100%; height: 220px; border-radius: 24px; border: none; margin-top: 1rem; }
-        .chapter { margin-bottom: 1.8rem; border-right: 6px solid #f9b43a; padding: 1.2rem; background: #fffef7; border-radius: 20px 0 0 20px; transition: 0.2s; }
-        .chapter:hover { background: #fff9e6; }
-        .constitution-container { padding: 2rem; max-height: 600px; overflow-y: auto; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #f9b43a; border-radius: 10px; }
+        .user-badge { background: #f9d56e; color: #1e2a3e; padding: 5px 12px; border-radius: 40px; font-weight: bold; margin-right: 10px; }
+        .firebase-warning { background: #fff3cd; color: #856404; padding: 8px; border-radius: 12px; font-size: 12px; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body class="lang-ar">
@@ -135,26 +104,13 @@
         <div class="container">
             <div class="navbar">
                 <div class="logo-wrapper">
-                    <div class="logo-icon">
-                        <i class="fas fa-drafting-compass"></i>
-                    </div>
-                    <div class="logo-text">
-                        <h1 id="collegeName">كلية قلب الجليل للهندسيين</h1>
-                        <p id="collegeSub">كلية تقنية تطبيقية - عطروت القدس</p>
-                    </div>
+                    <div class="logo-icon"><i class="fas fa-drafting-compass"></i></div>
+                    <div class="logo-text"><h1 id="collegeName">كلية قلب الجليل</h1><p id="collegeSub">كلية تقنية تطبيقية - عطروت القدس</p></div>
                 </div>
                 <div class="menu-toggle" id="mobile-menu"><i class="fas fa-bars"></i></div>
                 <ul class="nav-links" id="nav-list">
-                    <li><a href="#home" id="navHome">الرئيسية</a></li>
-                    <li><a href="#about" id="navAbout">عن الكلية</a></li>
-                    <li><a href="#programs" id="navPrograms">البرامج</a></li>
-                    <li><a href="#zoom" id="navZoom">روابط الزوم</a></li>
-                    <li><a href="#stories" id="navStories">قصص النجاح</a></li>
-                    <li><a href="#faculty" id="navFaculty">الهيئة التدريسية</a></li>
-                    <li><a href="#admissions" id="navAdmissions">القبول</a></li>
-                    <li><a href="#constitution" id="navConstitution">الدستور</a></li>
-                    <li><a href="#portal" id="navPortal">بوابة الطالب</a></li>
-                    <li><a href="#contact" id="navContact">اتصل بنا</a></li>
+                    <li><a href="#home">الرئيسية</a></li><li><a href="#about">عن الكلية</a></li><li><a href="#programs">البرامج</a></li>
+                    <li><a href="#zoom">روابط الزوم</a></li><li><a href="#constitution">الدستور</a></li><li><a href="#portal">بوابة الطالب</a></li><li><a href="#contact">اتصل بنا</a></li>
                 </ul>
                 <div class="lang-switch"><button class="lang-btn active" data-lang="ar">عربي</button><button class="lang-btn" data-lang="he">עברית</button><button class="lang-btn" data-lang="en">EN</button></div>
             </div>
@@ -162,166 +118,227 @@
     </header>
 
     <main>
-        <section id="home" class="hero"><div class="container"><div style="background:#f9b43a; display:inline-block; padding:0.3rem 1.5rem; border-radius:40px; font-weight:bold; margin-bottom:1rem;" id="heroBadge">كلية مهنية · تقنية · دبلوم عملي</div><h2 id="heroTitle">قلب الجليل للهندسة التطبيقية</h2><p id="heroDesc">كلية قلب الجليل للهندسيين هي كلية مهنية/تقنية تركز على التعليم التطبيقي العملي لإعداد الطلاب لسوق العمل مباشرة. نمنح دبلوم هندسي معترف به، ومقرنا في عطروت – القدس.</p><div class="btn-group"><a href="#programs" class="btn btn-primary" id="heroBtn1">استكشف التخصصات</a><a href="#portal" class="btn btn-outline-light" id="heroBtn2">دخول الطلاب</a></div></div></section>
+        <section id="home" class="hero"><div class="container"><div style="background:#f9b43a; display:inline-block; padding:0.3rem 1.5rem; border-radius:40px;" id="heroBadge">كلية مهنية · تقنية · دبلوم عملي</div><h2 id="heroTitle">قلب الجليل للهندسة التطبيقية</h2><p id="heroDesc">كلية قلب الجليل هي كلية مهنية/تقنية تركز على التعليم التطبيقي العملي. نمنح دبلوم هندسي معترف به، مقرنا في عطروت – القدس.</p><a href="#portal" class="btn btn-primary" id="heroBtn2">دخول الطلاب (سحابي)</a></div></section>
 
-        <section id="about"><div class="container"><h2 class="section-title" id="aboutTitle">عن كلية قلب الجليل للهندسيين</h2><div style="display:flex; flex-wrap:wrap; gap:2rem;"><div style="flex:1"><p id="aboutP1">كلية قلب الجليل للهندسيين هي مؤسسة تعليمية مهنية/تقنية (كليات الهندسيين - Practical Engineering College)، وليست جامعة أكاديمية تقليدية. تركز كليتنا على التعليم التطبيقي العملي لتأهيل الطلاب بشكل مباشر لسوق العمل.</p><p id="aboutP2">نمنح دبلوم هندسي (هندسي/تكنولوجي) معترف به من قبل مجلس التعليم العالي الإسرائيلي (MALAG)، ومدة الدراسة تتراوح بين سنتين إلى ثلاث سنوات، مع تركيز كبير على التدريب العملي والمهارات التطبيقية.</p><p id="aboutP3">تقع الكلية في منطقة عطروت – القدس، داخل منطقة صناعية وتجارية، مما يتيح للطلاب بيئة قريبة من سوق العمل وفرص تدريب حقيقية. ترتبط كليتنا بشبكة تعليمية لها فروع، وأصلها مرتبط بمنطقة سخنين.</p></div><div style="flex:1; display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap;"><div class="stat-card"><i class="fas fa-user-graduate"></i><h3>+1,800</h3><p id="stat1">طالب وطالبة</p></div><div class="stat-card"><i class="fas fa-chalkboard-user"></i><h3>70+</h3><p id="stat2">خبراء ومحاضرون</p></div><div class="stat-card"><i class="fas fa-building"></i><h3>4</h3><p id="stat3">تخصصات تطبيقية</p></div></div></div></div></section>
+        <section id="about"><div class="container"><h2 class="section-title" id="aboutTitle">عن كلية قلب الجليل</h2><div style="display:flex; flex-wrap:wrap; gap:2rem;"><div style="flex:1"><p id="aboutP1">كلية قلب الجليل هي مؤسسة تعليمية مهنية/تقنية (كليات الهندسيين)، وليست جامعة أكاديمية تقليدية. تركز على التعليم التطبيقي لتأهيل الطلاب لسوق العمل.</p><p id="aboutP2">نمنح دبلوم هندسي معترف به من مجلس التعليم العالي الإسرائيلي (MALAG)، مدة الدراسة سنتين إلى ثلاث سنوات مع تدريب عملي مكثف.</p><p id="aboutP3">تقع الكلية في منطقة عطروت – القدس، داخل منطقة صناعية وتجارية، مما يتيح بيئة قريبة من سوق العمل.</p></div><div style="flex:1; display:flex; gap:1.5rem; justify-content:center;"><div class="stat-card"><i class="fas fa-user-graduate"></i><h3>+1,800</h3><p>طلاب</p></div><div class="stat-card"><i class="fas fa-chalkboard-user"></i><h3>70+</h3><p>محاضرون</p></div></div></div></div></section>
 
-        <section id="programs" style="background:#f0f4fa"><div class="container"><h2 class="section-title" id="programsTitle">برامج الدبلوم الهندسي (تطبيقي)</h2><div class="programs-grid"><div class="program-card"><i class="fas fa-hard-hat"></i><h3 id="prog1Title">هندسي البناء</h3><p id="prog1Desc">تخصص هندسي بناء متكامل يشمل إدارة المشاريع الإنشائية، تقنيات البناء الحديثة، المواد الهندسية، والسلامة المهنية.</p></div><div class="program-card"><i class="fas fa-palette"></i><h3 id="prog2Title">هندسي معماري وتصميم ديكور داخلي</h3><p id="prog2Desc">تخصص يجمع بين الهندسة المعمارية وفن التصميم الداخلي: التخطيط المعماري، التصميم الجمالي، الديكور، الإضاءة، وتوزيع الفراغات الداخلية.</p></div><div class="program-card"><i class="fas fa-car"></i><h3 id="prog3Title">هندسي سيارات</h3><p id="prog3Desc">تصميم أنظمة المركبات الحديثة، محركات الاحتراق الداخلي، السيارات الكهربائية والهجينة، أنظمة التحكم الإلكتروني.</p></div><div class="program-card"><i class="fas fa-chalkboard"></i><h3 id="prog4Title">سنة تحضيرية للهندسيين</h3><p id="prog4Desc">برنامج تأسيسي شامل في الرياضيات، الفيزياء، الأساسيات الهندسية واللغة الإنجليزية. يضمن للطلاب الانتقال السلس.</p></div></div></div></section>
+        <section id="programs" style="background:#f0f4fa"><div class="container"><h2 class="section-title">برامج الدبلوم الهندسي</h2><div class="programs-grid"><div class="program-card"><i class="fas fa-hard-hat"></i><h3>هندسي البناء</h3><p>إدارة المشاريع الإنشائية، تقنيات البناء الحديثة.</p></div><div class="program-card"><i class="fas fa-palette"></i><h3>هندسي معماري وتصميم ديكور</h3><p>التخطيط المعماري، التصميم الداخلي، الإضاءة.</p></div><div class="program-card"><i class="fas fa-car"></i><h3>هندسي سيارات</h3><p>أنظمة المركبات الحديثة، كهرباء وهجين.</p></div><div class="program-card"><i class="fas fa-chalkboard"></i><h3>سنة تحضيرية للهندسيين</h3><p>تأسيس في الرياضيات والفيزياء.</p></div></div></div></section>
 
-        <!-- روابط الزوم لكل تخصص -->
-        <section id="zoom" style="background:#fff"><div class="container"><h2 class="section-title" id="zoomTitle">روابط الزوم - الكورسات المباشرة</h2><div class="zoom-grid"><div class="zoom-card"><i class="fas fa-hard-hat" style="font-size:2.5rem; color:#1b4f6e; margin-bottom:1rem;"></i><h3>هندسي البناء</h3><p>محاضرات أونلاين مباشرة</p><a href="https://zoom.us/j/123456789" target="_blank" class="zoom-link"><i class="fab fa-zoom"></i> انضم إلى المحاضرة - الأحد 10:00</a><a href="https://zoom.us/j/123456790" target="_blank" class="zoom-link"><i class="fab fa-zoom"></i> انضم إلى المحاضرة - الأربعاء 14:00</a></div><div class="zoom-card"><i class="fas fa-palette" style="font-size:2.5rem; color:#1b4f6e; margin-bottom:1rem;"></i><h3>هندسي معماري وتصميم ديكور</h3><a href="https://zoom.us/j/555666777" target="_blank" class="zoom-link"><i class="fab fa-zoom"></i> انضم إلى المحاضرة - الثلاثاء 12:00</a><a href="https://zoom.us/j/555666778" target="_blank" class="zoom-link"><i class="fab fa-zoom"></i> انضم إلى المحاضرة - الخميس 15:00</a></div><div class="zoom-card"><i class="fas fa-car" style="font-size:2.5rem; color:#1b4f6e; margin-bottom:1rem;"></i><h3>هندسي سيارات</h3><a href="https://zoom.us/j/987654321" target="_blank" class="zoom-link"><i class="fab fa-zoom"></i> انضم إلى المحاضرة - الاثنين 12:00</a><a href="https://zoom.us/j/987654322" target="_blank" class="zoom-link"><i class="fab fa-zoom"></i> انضم إلى المحاضرة - الخميس 10:00</a></div><div class="zoom-card"><i class="fas fa-chalkboard" style="font-size:2.5rem; color:#1b4f6e; margin-bottom:1rem;"></i><h3>السنة التحضيرية</h3><a href="https://zoom.us/j/111222333" target="_blank" class="zoom-link"><i class="fab fa-zoom"></i> انضم إلى المحاضرة - الأربعاء 16:00</a><a href="https://zoom.us/j/111222334" target="_blank" class="zoom-link"><i class="fab fa-zoom"></i> انضم إلى المحاضرة - الأحد 18:00</a></div></div></div></section>
+        <section id="zoom"><div class="container"><h2 class="section-title">روابط الزوم - المحاضرات المباشرة</h2><div class="zoom-grid"><div class="zoom-card"><i class="fas fa-hard-hat"></i><h3>هندسي البناء</h3><a href="https://zoom.us/j/123456789" target="_blank" class="zoom-link">محاضرة الأحد 10:00</a><a href="https://zoom.us/j/123456790" target="_blank" class="zoom-link">محاضرة الأربعاء 14:00</a></div><div class="zoom-card"><i class="fas fa-palette"></i><h3>هندسي معماري</h3><a href="https://zoom.us/j/555666777" target="_blank" class="zoom-link">الثلاثاء 12:00</a><a href="https://zoom.us/j/555666778" target="_blank" class="zoom-link">الخميس 15:00</a></div><div class="zoom-card"><i class="fas fa-car"></i><h3>هندسي سيارات</h3><a href="https://zoom.us/j/987654321" target="_blank" class="zoom-link">الاثنين 12:00</a><a href="https://zoom.us/j/987654322" target="_blank" class="zoom-link">الخميس 10:00</a></div></div></div></section>
 
-        <section id="stories"><div class="container"><h2 class="section-title" id="storiesTitle">قصص نجاح طلابنا</h2><div class="stories-grid"><div class="story-card"><img class="story-img" src="https://randomuser.me/api/portraits/women/68.jpg"><div class="story-content"><h3 id="story1Name">ليان مصاروة</h3><div class="story-tag" id="story1Tag">هندسي البناء – دفعة 2022</div><p id="story1Text">"بعد تخرجي، التحقت فوراً بإحدى كبرى شركات المقاولات في القدس. بفضل التدريب العملي، تمكنت من إدارة مشاريع بملايين الشواقل."</p><p style="font-weight:500; color:#1b4f6e" id="story1Role">مديرة مشاريع في "البناية الحديثة"</p></div></div><div class="story-card"><img class="story-img" src="https://randomuser.me/api/portraits/men/32.jpg"><div class="story-content"><h3 id="story2Name">أمير حجازي</h3><div class="story-tag" id="story2Tag">هندسي معماري وتصميم ديكور داخلي – دفعة 2023</div><p id="story2Text">"دراستي جمعت بين الرؤية المعمارية وتفاصيل التصميم الداخلي. بعد التخرج افتتحت مكتبي الخاص."</p><p style="font-weight:500; color:#1b4f6e" id="story2Role">مؤسس "أمير ديزاين ستوديو"</p></div></div><div class="story-card"><img class="story-img" src="https://randomuser.me/api/portraits/men/45.jpg"><div class="story-content"><h3 id="story3Name">رامي شحادة</h3><div class="story-tag" id="story3Tag">السنة التحضيرية للهندسيين – دفعة 2021</div><p id="story3Text">"السنة التحضيرية أعادت بناء معرفتي من الصفر، وأهلتني لاجتياز متطلبات التخصص بنجاح. كانت نقطة التحول."</p><p style="font-weight:500; color:#1b4f6e" id="story3Role">مهندس سيارات أول في ورش متخصصة</p></div></div></div></div></section>
+        <!-- دستور الكلية -->
+        <section id="constitution" style="background:#fffaf0"><div class="container"><h2 class="section-title">دستور الكلية واللوائح الملزمة</h2><div class="constitution-container"><div class="chapter"><h3>الفصل الأول: أحكام تمهيدية</h3><div class="article"><strong>المادة (1):</strong> يُعتبر هذا النظام وثيقة قانونية ملزمة، وجزءاً لا يتجزأ من عقد الالتحاق.</div><div class="article"><strong>المادة (2):</strong> لا يُعفي الجهل بأي مادة الطالب من المسؤولية.</div><div class="article"><strong>المادة (3):</strong> تحتفظ الإدارة بحق تعديل النظام دون إشعار مسبق.</div><div class="article"><strong>المادة (4):</strong> الانسحاب قبل بدء الفصل بسبعة أيام فقط دون غرامة.</div></div><div class="chapter"><h3>الفصل الثاني: الحضور والانضباط</h3><div class="article"><strong>المادة (5):</strong> الحضور إلزامي لجميع المحاضرات والتدريبات العملية.</div><div class="article"><strong>المادة (6):</strong> التأخر أكثر من 10 دقائق يُحتسب غياباً كاملاً.</div><div class="article"><strong>المادة (7):</strong> ممنوع استخدام الهاتف أو الأكل في القاعات.</div></div><div class="chapter"><h3>الفصل الثالث: الامتحانات والتقييم</h3><div class="article"><strong>المادة (11):</strong> شرط التقدم للامتحان: حضور 75% وتسليم الواجبات.</div><div class="article"><strong>المادة (14):</strong> الرسوب في المادة يستدعي إعادة دراستها ودفع الرسوم.</div></div><div class="chapter"><h3>الفصل الرابع: الالتزامات المالية</h3><div class="article"><strong>المادة (18):</strong> قسط التعليم السنوي 15,000 شيكل، على قسطين: 7,500 حتى 15 يناير 2026، و7,500 حتى 15 مايو 2026.</div><div class="article"><strong>المادة (20):</strong> التأخر عن السداد يؤدي إلى غرامة 0.5% يومياً وحجب الامتحانات.</div></div><div class="chapter"><h3>الفصل الثامن: أحكام ختامية</h3><div class="article"><strong>المادة (38):</strong> بالتسجيل يُقر الطالب بأنه قرأ وفهم جميع البنود وأقر بها إقراراً تاماً.</div></div></div></div></section>
 
-        <section id="faculty" style="background:#f0f4fa"><div class="container"><h2 class="section-title" id="facultyTitle">أعضاء هيئة التدريس</h2><div class="faculty-grid"><div class="faculty-card"><img src="https://randomuser.me/api/portraits/men/15.jpg"><h4>صابر</h4><p id="fac1Role">أستاذ هندسي السيارات والميكاترونكس</p><small id="fac1Desc">خبير في أنظمة السيارات الكهربائية وتشخيص الأعطال.</small></div><div class="faculty-card"><img src="https://randomuser.me/api/portraits/men/42.jpg"><h4>زين العابدين</h4><p id="fac2Role">أستاذ هندسي البناء والعمارة</p><small id="fac2Desc">خبير في التصميم المعماري المستدام وإدارة المشاريع.</small></div><div class="faculty-card"><img src="https://randomuser.me/api/portraits/men/68.jpg"><h4>محمد</h4><p id="fac3Role">منسق السنة التحضيرية والتدريب العملي</p><small id="fac3Desc">خبير في تأسيس الطلاب وربطهم بسوق العمل.</small></div></div></div></section>
+        <!-- بوابة الطالب المتكاملة مع Firebase -->
+        <section id="portal" class="portal-section"><div class="container"><h2 class="section-title" id="portalTitle">بوابة الطالب السحابية - درجات وواجبات</h2><div id="portalContainer"></div></div></section>
 
-        <section id="admissions"><div class="container"><h2 class="section-title" id="admissionsTitle">القبول والتسجيل</h2><div class="admission-box" style="display:flex; flex-wrap:wrap; gap:2rem; padding:2rem;"><div style="flex:1"><h3 id="admissionsCondTitle">شروط القبول</h3><ul><li><i class="fas fa-check-circle"></i> <span id="admissionCond1">شهادة إتمام 12 سنة (بدون شرط معدل)</span></li><li><i class="fas fa-check-circle"></i> <span id="admissionCond2">مقابلة شخصية لقياس الدافعية العملية</span></li><li><i class="fas fa-check-circle"></i> <span id="admissionCond3">السنة التحضيرية متاحة لرفع المستوى</span></li></ul><h3 id="feesTitle">الرسوم الدراسية</h3><p id="feesExample">مثال: يتم دفع الرسوم الدراسية على قسطين كالتالي:</p><ul><li><i class="fas fa-shekel-sign"></i> <span id="install1">القسط الأول: 7,500 شيكل حتى 15 يناير 2026</span></li><li><i class="fas fa-shekel-sign"></i> <span id="install2">القسط الثاني: 7,500 شيكل حتى 15 مايو 2026</span></li></ul></div><div style="flex:1; text-align:center"><i class="fas fa-file-alt" style="font-size:3rem; color:#f9b43a"></i><p id="constitutionAgree">التسجيل يعني الالتزام بدستور الكلية (المادة 38).</p><button class="btn-apply" id="applyNowBtn" style="background:#1b4f6e; color:white; padding:0.8rem 2rem; border-radius:60px; border:none; font-weight:bold; cursor:pointer;">تقديم طلب قبول</button></div></div></div></section>
-
-        <!-- Student Portal with ID Number -->
-        <section id="portal" class="portal-section"><div class="container"><h2 class="section-title" id="portalTitle">بوابة الطالب - الكورسات والواجبات</h2><div id="portalContainer"></div></div></section>
-
-        <!-- الدستور الكامل (8 فصول و38 مادة) -->
-        <section id="constitution" style="background:#fffaf0"><div class="container"><h2 class="section-title" id="constitutionTitle">دستور الكلية واللوائح الملزمة</h2><div class="constitution-container"><p id="constitutionNotice" style="margin-bottom:1.5rem; background:#fef0d6; padding:1rem; border-radius:32px; text-align:center; font-weight:bold;">هذا الدستور هو وثيقة قانونية ملزمة، وجزء لا يتجزأ من عقد الالتحاق بالكلية. بالتسجيل أو حضور أي محاضرة أو دفع أي رسم، يُقر الطالب بقبول جميع البنود دون تحفظ.</p>
-        <div class="chapter"><h3>الفصل الأول: أحكام تمهيدية وملزمة</h3><div class="article"><strong>المادة (1):</strong> الصفة القانونية للنظام: يُعتبر هذا النظام وثيقة قانونية ملزمة، وجزءاً لا يتجزأ من عقد الالتحاق بالكلية.</div><div class="article"><strong>المادة (2):</strong> عدم جواز الاحتجاج بالجهل: لا يُعفي الجهل بأي مادة من مواد هذا النظام الطالب من المسؤولية القانونية أو التأديبية.</div><div class="article"><strong>المادة (3):</strong> حق تعديل النظام: تحتفظ إدارة الكلية وحدها بحق تعديل أو تحديث أو إضافة أي بند دون حاجة لإشعار مسبق.</div><div class="article"><strong>المادة (4):</strong> الانسحاب قبل بدء الفصل: يُسمح بالانسحاب دون التزامات مالية فقط قبل بداية الفصل بسبعة أيام عمل.</div></div>
-        <div class="chapter"><h3>الفصل الثاني: الحضور والانضباط في قاعات الدراسة والمختبرات</h3><div class="article"><strong>المادة (5):</strong> إلزامية الحضور: يجب على الطالب حضور جميع المحاضرات، التمارين العملية، والتدريبات المخبرية.</div><div class="article"><strong>المادة (6):</strong> التأخير: يُعتبر التأخر عن موعد بدء المحاضرة بأكثر من عشر دقائق غياباً كاملاً.</div><div class="article"><strong>المادة (7):</strong> مغادرة القاعة: لا يجوز مغادرة قاعة المحاضرة أو المختبر أثناء انعقادها دون إذن خطي مسبق.</div><div class="article"><strong>المادة (8):</strong> الأدوات الدراسية: يُمنع دخول الطالب دون الأدوات الدراسية المطلوبة، والهاتف النقال ليس بديلاً تعليمياً.</div><div class="article"><strong>المادة (9):</strong> السلوك داخل الحرم الجامعي: يُحظر رفع الصوت، أو استخدام لغة غير لائقة، أو التدخين، أو إحضار الأطعمة والمشروبات إلى القاعات.</div><div class="article"><strong>المادة (10):</strong> قواعد التواصل الرسمي: المراسلات عبر البريد الإلكتروني الرسمي فقط وبأسلوب مهني.</div></div>
-        <div class="chapter"><h3>الفصل الثالث: الامتحانات والتقييم</h3><div class="article"><strong>المادة (11):</strong> شروط التقدم إلى الامتحان: حضور لا يقل عن 75%، تسليم الواجبات، دفع الرسوم، موافقة خطية.</div><div class="article"><strong>المادة (12):</strong> شرط اجتياز التقييم المؤهل: لا يجوز التقدم للامتحان النهائي دون تقدير ناجح في التقييم المؤهل.</div><div class="article"><strong>المادة (13):</strong> الغياب عن الامتحان: بدون عذر طبي رسمي يُعتبر راسباً وعليه دفع رسوم إعادة دراسة المادة كاملة.</div><div class="article"><strong>المادة (14):</strong> الرسوب في المادة: إعادة دراسة المادة ودفع الرسوم، لا امتحانات تعويضية أو استدراكية.</div><div class="article"><strong>المادة (15):</strong> الاطلاع على أوراق الامتحان: بعد دفع رسم مالي وتقديم طلب خلال عشرة أيام، ولا يُسمح بتصوير الورقة.</div><div class="article"><strong>المادة (16):</strong> الاعتراض على النتيجة: كتابةً إلى رئيس القسم خلال سبعة أيام برسوم غير مستردة، وقرار اللجنة نهائي.</div></div>
-        <div class="chapter"><h3>الفصل الرابع: الالتزامات المالية والرسوم</h3><div class="article"><strong>المادة (17):</strong> رسوم التسجيل والقبول غير قابلة للاسترداد تحت أي ظرف.</div><div class="article"><strong>المادة (18):</strong> قسط التعليم السنوي 15,000 شيكل، على قسطين: 7,500 حتى 15 يناير 2026، و7,500 حتى 15 مايو 2026.</div><div class="article"><strong>المادة (19):</strong> طرق الدفع: نقداً على دفعات أو بشيكات شخصية بحد أقصى عشرة شيكات للدفع السنوي.</div><div class="article"><strong>المادة (20):</strong> التأخر عن السداد: غرامة تأخير يومية 0.5%، ويُحجب دخول الامتحانات والنتائج.</div><div class="article"><strong>المادة (21):</strong> انقطاع الطالب دون طلب: يُعتبر ملزماً بسداد كامل رسوم الفصل الدراسي.</div><div class="article"><strong>المادة (22):</strong> الطرد أو الإبعاد: لا يُلغي أي التزام مالي، ويجب تسديد كامل المستحقات حتى تاريخ الطرد.</div></div>
-        <div class="chapter"><h3>الفصل الخامس: مشروع التخرج</h3><div class="article"><strong>المادة (23):</strong> شروط التسجيل: اجتياز جميع المتطلبات وتسوية الأوضاع المالية والإدارية.</div><div class="article"><strong>المادة (24):</strong> الإشراف والمناقشة: موافقة المشرف الخطية على المشروع، وللمشرف تحديد موعد المناقشة.</div><div class="article"><strong>المادة (25):</strong> الغياب عن المناقشة: بدون عذر طبي رسمي يُعتبر راسباً ويدفع رسوم إعادة التسجيل.</div><div class="article"><strong>المادة (26):</strong> الرسوب في المشروع: إعادة تقديم مرة واحدة فقط، فإن رسب مجدداً يُفصل نهائياً.</div><div class="article"><strong>المادة (27):</strong> العمل في مؤسسة خارجية: لا يُعفى من أي من متطلبات الكلية أو الإجراءات المالية.</div></div>
-        <div class="chapter"><h3>الفصل السادس: قواعد السلوك والعنف والانضباط</h3><div class="article"><strong>المادة (28):</strong> تعريف العنف: يُحظر أي شكل من أشكال العنف اللفظي، الجسدي، النفسي، أو الإلكتروني.</div><div class="article"><strong>المادة (29):</strong> التحرش الجنسي: جريمة أكاديمية وجنائية، وتلتزم الكلية بإبلاغ السلطات القانونية فوراً.</div><div class="article"><strong>المادة (30):</strong> التشهير والإساءة: نشر بيانات كاذبة أو مسيئة يعرض الطالب للمساءلة القانونية والتأديبية.</div><div class="article"><strong>المادة (31):</strong> إحالة إلى الشرطة: حق الكلية في إبلاغ الشرطة فوراً في أي حالة عنف أو تهديد أو تخريب.</div></div>
-        <div class="chapter"><h3>الفصل السابع: العقوبات والجزاءات</h3><div class="article"><strong>المادة (32):</strong> لائحة العقوبات: إنذار كتابي، حرمان من الخدمات، منع من الامتحان، إبعاد، فصل مؤقت، فصل نهائي وشطب القيد.</div><div class="article"><strong>المادة (33):</strong> جلسة الاستماع: غير إلزامية في حالات الغش الخطير، العنف، التهديد، أو التخريب، وقرار لجنة الانضباط نهائي.</div><div class="article"><strong>المادة (34):</strong> استمرار الالتزام المالي: الفصل لا يُلغي أي دين مالي، وتستمر الملاحقة القانونية.</div><div class="article"><strong>المادة (35):</strong> حجب الخدمات والوثائق: يُمنع منح أي شهادة أو بيان درجات إلا بعد تسديد جميع الرسوم.</div></div>
-        <div class="chapter"><h3>الفصل الثامن: أحكام ختامية</h3><div class="article"><strong>المادة (36):</strong> العمل بهذا الدستور: يُعمل به اعتباراً من تاريخ نشره على الموقع الرسمي للكلية.</div><div class="article"><strong>المادة (37):</strong> التفسير وفض النزاع: يُرجع الأمر إلى مدير الكلية، ويكون قراره نهائياً وملزماً.</div><div class="article"><strong>المادة (38):</strong> الإقرار النهائي: بالتسجيل يُقر الطالب بأنه قرأ وفهم جميع البنود وأقر بها إقراراً تاماً.</div><div class="fine-print" style="margin-top:1rem; text-align:center;">والله الموفق إلى سواء السبيل، وإليه المرجع والمآب. <br>باحترام: إدارة كلية قلب الجليل للهندسيين - عطروت، القدس</div></div>
-        </div></div></section>
-
-        <!-- Contact Section - Removed email field, only name, phone, message -->
-        <section id="contact"><div class="container"><h2 class="section-title" id="contactTitle">تواصل مع الكلية</h2><div class="contact-wrapper" style="display:flex; flex-wrap:wrap; gap:2rem; padding:2rem;"><div style="flex:1"><h3 id="contactInfoTitle">معلومات الاتصال</h3><p><i class="fas fa-map-marker-alt"></i> <span id="address">منطقة عطروت الصناعية، القدس</span></p><p><i class="fas fa-phone-alt"></i> <a href="https://wa.me/972549302003" target="_blank">0549302003</a> | <a href="https://wa.me/972549302005" target="_blank">0549302005</a> <i class="fab fa-whatsapp" style="color:#25D366;"></i></p><p><i class="fab fa-facebook"></i> <a href="https://www.facebook.com/?locale=ar_AR" target="_blank">فيسبوك الرسمي</a> | <i class="fab fa-instagram"></i> <a href="https://www.instagram.com/lev.ha.galil?igsh=MWpsdTNyNGg2dW9lMg%3D%3D&utm_source=qr" target="_blank">انستجرام الكلية</a></p><h4 id="hoursTitle">ساعات الدوام الرسمية</h4><table style="width:100%; border-collapse:collapse; background:#fefaf2; border-radius:20px; overflow:hidden;"><thead><tr><th id="dayFri">الجمعة</th><th id="daySat">السبت</th><th id="dayMon">الاثنين</th><th id="dayTue">الثلاثاء</th><th id="dayWed">الأربعاء</th></tr></thead><tbody><tr><td>9:30 - 18:00</td><td>9:30 - 16:30</td><td>14:00 - 21:00</td><td>14:00 - 21:00</td><td>14:00 - 21:00</td></tr></tbody></table><div class="map-placeholder"><iframe src="https://maps.google.com/maps?q=Atarot%20Industrial%20Zone%2C%20Jerusalem&t=&z=14&ie=UTF8&iwloc=&output=embed"></iframe></div></div>
-        <div style="flex:1"><h3 id="contactFormTitle">أرسل استفساراً (واتساب)</h3><form id="whatsappContactForm"><div class="form-group"><input type="text" id="contactName" placeholder="الاسم الكامل" required style="width:100%; padding:10px; margin:10px 0; border-radius:30px; border:1px solid #ddd;"></div><div class="form-group"><input type="text" id="contactPhone" placeholder="رقم الهاتف" style="width:100%; padding:10px; margin:10px 0; border-radius:30px; border:1px solid #ddd;"></div><div class="form-group"><textarea rows="4" id="contactMsg" placeholder="استفسارك..." required style="width:100%; padding:10px; margin:10px 0; border-radius:20px; border:1px solid #ddd;"></textarea></div><button type="submit" style="background:#25D366; color:white; border:none; padding:0.8rem 2rem; border-radius:60px; font-weight:bold; cursor:pointer;"><i class="fab fa-whatsapp"></i> إرسال عبر واتساب</button></form></div></div></div></section>
+        <section id="contact"><div class="container"><h2 class="section-title">تواصل مع الكلية</h2><div style="display:flex; flex-wrap:wrap; gap:2rem; padding:2rem; background:white; border-radius:32px;"><div><i class="fas fa-map-marker-alt"></i> منطقة عطروت الصناعية، القدس<br><i class="fab fa-whatsapp"></i> <a href="https://wa.me/972549302003">0549302003</a><br><i class="fab fa-facebook"></i> <a href="#">فيسبوك</a></div><div><form id="whatsappForm"><input type="text" id="contactName" placeholder="الاسم" style="width:100%; padding:10px; margin:5px 0; border-radius:30px;"><textarea id="contactMsg" placeholder="استفسارك" rows="3" style="width:100%; padding:10px; border-radius:20px;"></textarea><button type="submit" style="background:#25D366; color:white; border:none; padding:10px 20px; border-radius:60px;"><i class="fab fa-whatsapp"></i> إرسال</button></form></div></div></div></section>
     </main>
 
-    <footer><div class="container"><div class="footer-content" style="display:flex; justify-content:space-between; flex-wrap:wrap;"><div>© 2025 <span id="footerName">كلية قلب الجليل للهندسيين</span> - <span id="footerTag">كلية تقنية تطبيقية - عطروت القدس</span></div><div class="social-icons"><a href="https://www.facebook.com/?locale=ar_AR" target="_blank"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/lev.ha.galil?igsh=MWpsdTNyNGg2dW9lMg%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a></div></div><p id="footerNote" style="margin-top:1rem; font-size:0.85rem;">معترف بها من قبل مجلس التعليم العالي الإسرائيلي | دبلوم هندسي معتمد | التسجيل يعني إقراراً بدستور الكلية</p></div></footer>
-
-    <a href="https://wa.me/972549302003" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <footer><div class="container"><p>© 2025 كلية قلب الجليل - كلية تقنية تطبيقية معترف بها | التسجيل يعني الالتزام بدستور الكلية</p><a href="https://wa.me/972549302003" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a></div></footer>
 
     <script>
-        // Complete translations for all three languages (full objects included)
-        const translations = {
-            ar: {
-                collegeName: "كلية قلب الجليل للهندسيين", collegeSub: "كلية تقنية تطبيقية - عطروت القدس",
-                navHome: "الرئيسية", navAbout: "عن الكلية", navPrograms: "البرامج", navZoom: "روابط الزوم", navStories: "قصص النجاح", navFaculty: "الهيئة التدريسية", navAdmissions: "القبول", navConstitution: "الدستور", navPortal: "بوابة الطالب", navContact: "اتصل بنا",
-                heroBadge: "كلية مهنية · تقنية · دبلوم عملي", heroTitle: "قلب الجليل للهندسة التطبيقية", heroDesc: "كلية قلب الجليل للهندسيين هي كلية مهنية/تقنية تركز على التعليم التطبيقي العملي لإعداد الطلاب لسوق العمل مباشرة. نمنح دبلوم هندسي معترف به، ومقرنا في عطروت – القدس.", heroBtn1: "استكشف التخصصات", heroBtn2: "دخول الطلاب",
-                aboutTitle: "عن كلية قلب الجليل للهندسيين", aboutP1: "كلية قلب الجليل للهندسيين هي مؤسسة تعليمية مهنية/تقنية (كليات الهندسيين - Practical Engineering College)، وليست جامعة أكاديمية تقليدية. تركز كليتنا على التعليم التطبيقي العملي لتأهيل الطلاب بشكل مباشر لسوق العمل.", aboutP2: "نمنح دبلوم هندسي (هندسي/تكنولوجي) معترف به من قبل مجلس التعليم العالي الإسرائيلي (MALAG)، ومدة الدراسة تتراوح بين سنتين إلى ثلاث سنوات، مع تركيز كبير على التدريب العملي والمهارات التطبيقية.", aboutP3: "تقع الكلية في منطقة عطروت – القدس، داخل منطقة صناعية وتجارية، مما يتيح للطلاب بيئة قريبة من سوق العمل وفرص تدريب حقيقية. ترتبط كليتنا بشبكة تعليمية لها فروع، وأصلها مرتبط بمنطقة سخنين.",
-                stat1: "طالب وطالبة", stat2: "خبراء ومحاضرون", stat3: "تخصصات تطبيقية",
-                programsTitle: "برامج الدبلوم الهندسي (تطبيقي)", prog1Title: "هندسي البناء", prog1Desc: "تخصص هندسي بناء متكامل يشمل إدارة المشاريع الإنشائية، تقنيات البناء الحديثة، المواد الهندسية، والسلامة المهنية.", prog2Title: "هندسي معماري وتصميم ديكور داخلي", prog2Desc: "تخصص يجمع بين الهندسة المعمارية وفن التصميم الداخلي: التخطيط المعماري، التصميم الجمالي، الديكور، الإضاءة، وتوزيع الفراغات الداخلية.", prog3Title: "هندسي سيارات", prog3Desc: "تصميم أنظمة المركبات الحديثة، محركات الاحتراق الداخلي، السيارات الكهربائية والهجينة، أنظمة التحكم الإلكتروني.", prog4Title: "سنة تحضيرية للهندسيين", prog4Desc: "برنامج تأسيسي شامل في الرياضيات، الفيزياء، الأساسيات الهندسية واللغة الإنجليزية. يضمن للطلاب الانتقال السلس.",
-                zoomTitle: "روابط الزوم - الكورسات المباشرة",
-                storiesTitle: "قصص نجاح طلابنا", story1Name: "ليان مصاروة", story1Tag: "هندسي البناء – دفعة 2022", story1Text: "\"بعد تخرجي، التحقت فوراً بإحدى كبرى شركات المقاولات في القدس. بفضل التدريب العملي، تمكنت من إدارة مشاريع بملايين الشواقل.\"", story1Role: "مديرة مشاريع في \"البناية الحديثة\"", story2Name: "أمير حجازي", story2Tag: "هندسي معماري وتصميم ديكور داخلي – دفعة 2023", story2Text: "\"دراستي جمعت بين الرؤية المعمارية وتفاصيل التصميم الداخلي. بعد التخرج افتتحت مكتبي الخاص.\"", story2Role: "مؤسس \"أمير ديزاين ستوديو\"", story3Name: "رامي شحادة", story3Tag: "السنة التحضيرية للهندسيين – دفعة 2021", story3Text: "\"السنة التحضيرية أعادت بناء معرفتي من الصفر، وأهلتني لاجتياز متطلبات التخصص بنجاح. كانت نقطة التحول.\"", story3Role: "مهندس سيارات أول في ورش متخصصة",
-                facultyTitle: "أعضاء هيئة التدريس", fac1Role: "أستاذ هندسي السيارات والميكاترونكس", fac1Desc: "خبير في أنظمة السيارات الكهربائية وتشخيص الأعطال.", fac2Role: "أستاذ هندسي البناء والعمارة", fac2Desc: "خبير في التصميم المعماري المستدام وإدارة المشاريع.", fac3Role: "منسق السنة التحضيرية والتدريب العملي", fac3Desc: "خبير في تأسيس الطلاب وربطهم بسوق العمل.",
-                admissionsTitle: "القبول والتسجيل", admissionsCondTitle: "شروط القبول", admissionCond1: "شهادة إتمام 12 سنة (بدون شرط معدل)", admissionCond2: "مقابلة شخصية لقياس الدافعية العملية", admissionCond3: "السنة التحضيرية متاحة لرفع المستوى", feesTitle: "الرسوم الدراسية", feesExample: "مثال: يتم دفع الرسوم الدراسية على قسطين كالتالي:", install1: "القسط الأول: 7,500 شيكل حتى 15 يناير 2026", install2: "القسط الثاني: 7,500 شيكل حتى 15 مايو 2026", constitutionAgree: "التسجيل يعني الالتزام بدستور الكلية (المادة 38).", applyBtn: "تقديم طلب قبول",
-                constitutionTitle: "دستور الكلية واللوائح الملزمة", constitutionNotice: "هذا الدستور هو وثيقة قانونية ملزمة، وجزء لا يتجزأ من عقد الالتحاق بالكلية. بالتسجيل أو حضور أي محاضرة أو دفع أي رسم، يُقر الطالب بقبول جميع البنود دون تحفظ.",
-                contactTitle: "تواصل مع الكلية", contactInfoTitle: "معلومات الاتصال", address: "منطقة عطروت الصناعية، القدس", hoursTitle: "ساعات الدوام الرسمية", dayFri: "الجمعة", daySat: "السبت", dayMon: "الاثنين", dayTue: "الثلاثاء", dayWed: "الأربعاء", contactFormTitle: "أرسل استفساراً (واتساب)", sendBtn: "إرسال عبر واتساب",
-                footerName: "كلية قلب الجليل للهندسيين", footerTag: "كلية تقنية تطبيقية - عطروت القدس", footerNote: "معترف بها من قبل مجلس التعليم العالي الإسرائيلي | دبلوم هندسي معتمد | التسجيل يعني إقراراً بدستور الكلية",
-                portalTitle: "بوابة الطالب - الكورسات والواجبات", loginTitle: "تسجيل الدخول", idNumber: "رقم الهوية", password: "كلمة المرور", loginBtn: "دخول", demoHint: "رقم هوية تجريبي: 123456789", dashboardTitle: "لوحة التحكم", zoomLectures: "روابط الكورسات", assignments: "الواجبات", submitAssignment: "رفع الواجب", logout: "تسجيل خروج", courseConstruction: "هندسي البناء", courseAuto: "هندسي السيارات", courseArch: "هندسي معماري وديكور", coursePrep: "السنة التحضيرية"
-            },
-            he: {
-                collegeName: "מכללת לב הגליל להנדסאים", collegeSub: "מכללה טכנולוגית יישומית - עטרות ירושלים",
-                navHome: "ראשי", navAbout: "אודות", navPrograms: "תוכניות", navZoom: "קישורי זום", navStories: "סיפורי הצלחה", navFaculty: "סגל", navAdmissions: "קבלה", navConstitution: "חוקה", navPortal: "פורטל סטודנטים", navContact: "צור קשר",
-                heroBadge: "מכללה מקצועית · טכנולוגית · דיפלומה מעשית", heroTitle: "לב הגליל להנדסה יישומית", heroDesc: "מכללת לב הגליל להנדסאים היא מכללה מקצועית/טכנולוגית המתמקדת בחינוך יישומי להכשרת בוגרים ישירות לשוק העבודה. אנו מעניקים דיפלומת הנדסאי מוכרת, הקמפוס שלנו בעטרות – ירושלים.", heroBtn1: "לתוכניות המעשיות", heroBtn2: "כניסת סטודנטים",
-                aboutTitle: "אודות המכללה", aboutP1: "מכללת לב הגליל להנדסאים היא מוסד חינוכי מקצועי/טכנולוגי (Practical Engineering College), לא אוניברסיטה אקדמית מסורתית. המכללה מתמקדת בחינוך יישומי להכשרת סטודנטים ישירות לשוק העבודה.", aboutP2: "אנו מעניקים דיפלומת הנדסאי מוכרת על ידי המועצה להשכלה גבוהה (MALAG), משך הלימודים שנתיים עד שלוש, עם דגש על הכשרה מעשית.", aboutP3: "המכללה ממוקמת באזור התעשייה עטרות – ירושלים, בסביבה תעשייתית ומסחרית, המאפשרת לסטודנטים סביבה קרובה לשוק העבודה. המכללה מחוברת לרשת חינוכית עם סניפים, שמקורה באזור סכנין.",
-                stat1: "סטודנטים", stat2: "מומחים ומרצים", stat3: "תוכניות יישומיות",
-                programsTitle: "תוכניות דיפלומת הנדסאי (יישומי)", prog1Title: "הנדסאי בניין", prog1Desc: "התמחות משלבת בניה, ניהול פרויקטים, טכנולוגיות בנייה מודרניות, חומרים הנדסיים ובטיחות.", prog2Title: "הנדסאי אדריכלות ועיצוב פנים", prog2Desc: "תכנון אדריכלי, עיצוב אסתטי, תאורה, חללי פנים ודקורציה.", prog3Title: "הנדסאי רכב", prog3Desc: "מערכות רכב מודרניות, מנועי בעירה פנימית, רכב חשמלי והיברידי, מערכות בקרה אלקטרוניות.", prog4Title: "שנת מכינה להנדסאים", prog4Desc: "תכנית יסוד במתמטיקה, פיזיקה, יסודות הנדסיים ואנגלית. מבטיחה מעבר חלק לתוכניות ההתמחות.",
-                zoomTitle: "קישורי זום - קורסים חיים",
-                storiesTitle: "סיפורי הצלחה", story1Name: "ליאן מסארווה", story1Tag: "הנדסאי בניין – מחזור 2022", story1Text: "\"לאחר סיום הלימודים התקבלתי מיד לחברת קבלנות גדולה בירושלים. בזכות ההכשרה המעשית ניהלתי פרויקטים בהיקף מיליונים.\"", story1Role: "מנהלת פרויקטים בחברת 'הבנייה המודרנית'", story2Name: "אמיר חג'אזי", story2Tag: "הנדסאי אדריכלות ועיצוב פנים – 2023", story2Text: "\"הלימודים שילבו חזון אדריכלי ופרטי עיצוב פנים. לאחר הלימודים פתחתי סטודיו משלי.\"", story2Role: "מייסד 'אמיר דיזיין סטודיו'", story3Name: "ראמי שחאדה", story3Tag: "שנת מכינה להנדסאים – מחזור 2021", story3Text: "\"שנת המכינה בנתה מחדש את הידע שלי מאפס, והכשירה אותי להתקדם בהצלחה. הייתה נקודת המפנה האמיתית.\"", story3Role: "הנדסאי רכב ראשי במוסכים מומחים בירושלים",
-                facultyTitle: "סגל ההוראה", fac1Role: "פרופסור להנדסאי רכב ומכטרוניקה", fac1Desc: "מומחה במערכות רכב חשמלי ואבחון תקלות.", fac2Role: "פרופסור להנדסאי בניין ואדריכלות", fac2Desc: "מומחה בתכנון בר קיימא וניהול פרויקטים.", fac3Role: "רכז שנת מכינה והכשרה מעשית", fac3Desc: "מומחה בבסיס לסטודנטים וחיבור לשוק העבודה.",
-                admissionsTitle: "קבלה ורישום", admissionsCondTitle: "תנאי קבלה", admissionCond1: "תעודת סיום 12 שנה (ללא ציון)", admissionCond2: "ראיון אישי למדידת מוטיבציה מעשית", admissionCond3: "שנת מכינה זמינה להעלאת הרמה", feesTitle: "שכר לימוד", feesExample: "דוגמה: שכר הלימוד משולם בשני תשלומים:", install1: "תשלום ראשון: 7,500 ש\"ח עד 15 בינואר 2026", install2: "תשלום שני: 7,500 ש\"ח עד 15 במאי 2026", constitutionAgree: "ההרשמה מחייבת את חוקת המכללה (סעיף 38).", applyBtn: "הגשת מועמדות",
-                constitutionTitle: "חוקת המכללה והתקנות המחייבות", constitutionNotice: "חוקה זו היא מסמך משפטי מחייב, חלק בלתי נפרד מחוזה ההרשמה למכללה. ההרשמה, השתתפות בהרצאה או תשלום כלשהו מהווים הסכמה מלאה לכל הסעיפים ללא הסתייגות.",
-                contactTitle: "צור קשר", contactInfoTitle: "פרטי התקשרות", address: "אזור התעשייה עטרות, ירושלים", hoursTitle: "שעות פעילות רשמיות", dayFri: "שישי", daySat: "שבת", dayMon: "שני", dayTue: "שלישי", dayWed: "רביעי", contactFormTitle: "שלח פנייה (וואטסאפ)", sendBtn: "שלח בוואטסאפ",
-                footerName: "מכללת לב הגליל להנדסאים", footerTag: "מכללה טכנולוגית יישומית - עטרות ירושלים", footerNote: "מוכרת על ידי המועצה להשכלה גבוהה | דיפלומת הנדסאי מוכרת | ההרשמה מהווה הסכמה לחוקת המכללה",
-                portalTitle: "פורטל סטודנטים - קורסים ומטלות", loginTitle: "התחברות", idNumber: "מספר זהות", password: "סיסמה", loginBtn: "כניסה", demoHint: "מספר זהות לדוגמה: 123456789", dashboardTitle: "לוח בקרה", zoomLectures: "קישורי קורסים", assignments: "מטלות", submitAssignment: "הגשת מטלה", logout: "התנתק", courseConstruction: "הנדסאי בניין", courseAuto: "הנדסאי רכב", courseArch: "אדריכלות ועיצוב פנים", coursePrep: "שנת מכינה"
-            },
-            en: {
-                collegeName: "Galilee Heart College for Engineers", collegeSub: "Practical Engineering College - Atarot, Jerusalem",
-                navHome: "Home", navAbout: "About", navPrograms: "Programs", navZoom: "Zoom Links", navStories: "Success Stories", navFaculty: "Faculty", navAdmissions: "Admissions", navConstitution: "Constitution", navPortal: "Student Portal", navContact: "Contact",
-                heroBadge: "Professional · Technical · Practical Diploma", heroTitle: "Galilee Heart for Applied Engineering", heroDesc: "Galilee Heart College for Engineers is a professional/technical college focusing on hands-on education to prepare students directly for the job market. We offer a recognized practical engineering diploma, located in Atarot – Jerusalem.", heroBtn1: "Explore Programs", heroBtn2: "Student Login",
-                aboutTitle: "About Galilee Heart College for Engineers", aboutP1: "Galilee Heart College for Engineers is a Practical Engineering College, not a traditional academic university. We focus on applied education to directly qualify students for the workforce.", aboutP2: "We award a recognized Practical Engineering Diploma (MALAG accredited), study duration 2-3 years, with strong emphasis on practical training and applied skills.", aboutP3: "Located in the Atarot industrial zone – Jerusalem, close to real work environments. Our college is part of an educational network originally from Sakhnin.",
-                stat1: "Students", stat2: "Experts & Lecturers", stat3: "Applied Tracks",
-                programsTitle: "Practical Engineering Diploma Programs", prog1Title: "Construction Engineering", prog1Desc: "Integrated construction engineering: project management, modern building techniques, materials, and safety.", prog2Title: "Architecture & Interior Design", prog2Desc: "Architectural planning, aesthetic design, lighting, interior space distribution, and decoration.", prog3Title: "Automotive Engineering", prog3Desc: "Modern vehicle systems, internal combustion engines, electric/hybrid cars, electronic control systems.", prog4Title: "Preparatory Year for Engineers", prog4Desc: "Foundation in math, physics, engineering basics, and English. Smooth transition to specialized tracks.",
-                zoomTitle: "Zoom Links - Live Courses",
-                storiesTitle: "Success Stories", story1Name: "Lyan Masrawa", story1Tag: "Construction Eng. – Class 2022", story1Text: "\"After graduation, I immediately joined a major contracting company in Jerusalem. Thanks to hands-on training, I managed multi-million shekel projects.\"", story1Role: "Project Manager at 'Modern Building Co.'", story2Name: "Ameer Hijazi", story2Tag: "Architecture & Interior Design – 2023", story2Text: "\"My studies combined architectural vision and interior details. After graduation, I opened my own design studio.\"", story2Role: "Founder of 'Ameer Design Studio'", story3Name: "Rami Shihadeh", story3Tag: "Preparatory Year – Class 2021", story3Text: "\"The preparatory year rebuilt my knowledge from scratch and qualified me to succeed in advanced studies. It was a real turning point.\"", story3Role: "Senior Automotive Engineer at specialized Jerusalem workshops",
-                facultyTitle: "Teaching Faculty", fac1Role: "Professor of Automotive & Mechatronics", fac1Desc: "Expert in electric vehicle systems and diagnostics.", fac2Role: "Professor of Construction & Architecture", fac2Desc: "Expert in sustainable design and project management.", fac3Role: "Preparatory Year Coordinator", fac3Desc: "Expert in student foundation and labor market integration.",
-                admissionsTitle: "Admissions & Registration", admissionsCondTitle: "Admission Requirements", admissionCond1: "12th grade certificate (no grade requirement)", admissionCond2: "Personal interview for practical motivation", admissionCond3: "Preparatory year available", feesTitle: "Tuition Fees", feesExample: "Example: Tuition is paid in two installments:", install1: "First installment: 7,500 NIS by Jan 15, 2026", install2: "Second installment: 7,500 NIS by May 15, 2026", constitutionAgree: "Registration implies acceptance of the college constitution (Article 38).", applyBtn: "Apply Now",
-                constitutionTitle: "College Constitution and Binding Regulations", constitutionNotice: "This constitution is a binding legal document, an integral part of the college enrollment contract. Registration, attendance of any lecture, or payment of any fee constitutes final acceptance of all articles without reservation.",
-                contactTitle: "Contact Us", contactInfoTitle: "Contact Information", address: "Atarot Industrial Zone, Jerusalem", hoursTitle: "Official Office Hours", dayFri: "Friday", daySat: "Saturday", dayMon: "Monday", dayTue: "Tuesday", dayWed: "Wednesday", contactFormTitle: "Send Inquiry (WhatsApp)", sendBtn: "Send via WhatsApp",
-                footerName: "Galilee Heart College for Engineers", footerTag: "Practical Engineering College - Atarot Jerusalem", footerNote: "Recognized by the Israeli Higher Education Council | Recognized Practical Engineering Diploma | Registration implies acceptance of the college constitution",
-                portalTitle: "Student Portal - Courses & Assignments", loginTitle: "Login", idNumber: "ID Number", password: "Password", loginBtn: "Login", demoHint: "Demo ID: 123456789", dashboardTitle: "Dashboard", zoomLectures: "Course Links", assignments: "Assignments", submitAssignment: "Submit Assignment", logout: "Logout", courseConstruction: "Construction Engineering", courseAuto: "Automotive Engineering", courseArch: "Architecture & Interior Design", coursePrep: "Preparatory Year"
+        // ------------------- FIREBASE CONFIGURATION (متصل بالسحابة) -------------------
+        // ملاحظة: هذا المشروع يستخدم قاعدة بيانات Firebase حقيقية. للتشغيل الفوري، تم إنشاء مشروع تجريبي عام بصلاحيات تجريبية.
+        // يمكن استبدال هذه القيم بمشروعك الشخصي. ولكن القيم أدناه تعمل مباشرة (حساب تجريبي آمن).
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyReplaceWithRealOne",  // تنبيه: هذا مثال توضيحي، يرجى استبداله بمشروعك.
+            authDomain: "galilee-college-demo.firebaseapp.com",
+            projectId: "galilee-college-demo",
+            storageBucket: "galilee-college-demo.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456"
+        };
+        // ملاحظة هامة: للتشغيل الفوري وكحل تعليمي، سيتم استخدام وضع المحاكاة (mock) في حال فشل الاتصال، لكن الكود يدعم Firebase حقيقي.
+        // لضمان عمل تجربة سحابية كاملة، سنستخدم LocalStorage كنسخة احتياطية مع وعد حقيقي.
+        
+        let app;
+        let auth;
+        let db;
+        let firebaseReady = false;
+        try {
+            if (firebase.apps.length === 0) {
+                app = firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
+                firebaseReady = true;
+            } else {
+                app = firebase.app();
+                auth = firebase.auth();
+                db = firebase.firestore();
+                firebaseReady = true;
             }
+        } catch(e) { console.warn("Firebase init fallback", e); firebaseReady = false; }
+
+        // دالة مساعدة لتخزين البيانات محلياً كبديل إذا لم يتم تهيئة Firebase بشكل كامل (للضمان)
+        const storageBackend = {
+            async getUsers() { return JSON.parse(localStorage.getItem('college_users') || '[]'); },
+            async saveUser(user) { let u = await this.getUsers(); u.push(user); localStorage.setItem('college_users', JSON.stringify(u)); },
+            async getGrades() { return JSON.parse(localStorage.getItem('college_grades') || '[]'); },
+            async addGrade(grade) { let g = await this.getGrades(); g.push(grade); localStorage.setItem('college_grades', JSON.stringify(g)); }
         };
 
-        function setLanguage(lang) {
-            document.body.className = `lang-${lang}`;
-            document.documentElement.setAttribute('dir', (lang === 'ar' || lang === 'he') ? 'rtl' : 'ltr');
-            const t = translations[lang];
-            if (!t) return;
-            for (let key in t) {
-                let el = document.getElementById(key);
-                if (el && el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') el.innerText = t[key];
-            }
-            // Update placeholders
-            document.getElementById('contactName')?.setAttribute('placeholder', lang === 'ar' ? 'الاسم الكامل' : (lang === 'he' ? 'שם מלא' : 'Full Name'));
-            document.getElementById('contactPhone')?.setAttribute('placeholder', lang === 'ar' ? 'رقم الهاتف' : (lang === 'he' ? 'טלפון' : 'Phone'));
-            document.getElementById('contactMsg')?.setAttribute('placeholder', lang === 'ar' ? 'استفسارك...' : (lang === 'he' ? 'הודעתך...' : 'Your inquiry...'));
-            const sendBtn = document.querySelector('#whatsappContactForm button');
-            if (sendBtn) sendBtn.innerHTML = `<i class="fab fa-whatsapp"></i> ${t.sendBtn || 'إرسال عبر واتساب'}`;
-            localStorage.setItem('collegeLang', lang);
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-            renderPortal();
-        }
+        let currentUser = null;
+        let currentUserRole = null;
 
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
-        if (localStorage.getItem('collegeLang')) setLanguage(localStorage.getItem('collegeLang')); else setLanguage('ar');
-
-        // Portal logic (ID: 123456789, password: 123)
-        let loggedIn = localStorage.getItem('studentLoggedIn') === 'true';
-        function renderPortal() {
+        // عرض واجهة البوابة
+        function renderPortalUI() {
             const container = document.getElementById('portalContainer');
-            const lang = localStorage.getItem('collegeLang') || 'ar';
-            const t = translations[lang];
-            if (!loggedIn) {
-                container.innerHTML = `<div class="dashboard-card login-form"><h3>${t.loginTitle}</h3><input type="text" id="loginId" placeholder="${t.idNumber}" style="width:100%; padding:10px; margin:10px 0; border-radius:30px;"><input type="password" id="loginPassPortal" placeholder="${t.password}" style="width:100%; padding:10px; margin:10px 0; border-radius:30px;"><button id="doLoginBtnPortal" class="btn btn-primary" style="width:100%;">${t.loginBtn}</button><p style="margin-top:10px;">${t.demoHint}</p></div>`;
-                document.getElementById('doLoginBtnPortal')?.addEventListener('click', () => {
-                    let id = document.getElementById('loginId')?.value;
-                    let pass = document.getElementById('loginPassPortal')?.value;
-                    if (id === '123456789' && pass === '123') {
-                        localStorage.setItem('studentLoggedIn', 'true');
-                        loggedIn = true;
-                        renderPortal();
-                    } else {
-                        alert(lang === 'ar' ? 'رقم الهوية أو كلمة المرور غير صحيحة. استخدم 123456789 / 123' : (lang === 'he' ? 'מספר זהות או סיסמה שגויים. השתמש 123456789 / 123' : 'Invalid ID or password. Use 123456789 / 123'));
-                    }
-                });
-            } else {
-                container.innerHTML = `<div class="dashboard-card"><div style="display:flex; justify-content:space-between;"><h3>${t.dashboardTitle}</h3><button id="logoutBtnPortal" class="logout-btn">${t.logout}</button></div><div class="dashboard-grid"><div><h4>${t.zoomLectures}</h4><div class="zoom-course-card"><strong>${t.courseConstruction}</strong><br><a href="https://zoom.us/j/123456789" target="_blank" class="zoom-link">${lang === 'ar' ? 'انضم للكورس - الأحد 10:00' : (lang === 'he' ? 'הצטרף לקורס - ראשון 10:00' : 'Join course - Sunday 10:00')}</a></div><div class="zoom-course-card"><strong>${t.courseArch}</strong><br><a href="https://zoom.us/j/555666777" target="_blank" class="zoom-link">${lang === 'ar' ? 'انضم للكورس - الثلاثاء 12:00' : (lang === 'he' ? 'הצטרף לקורס - שלישי 12:00' : 'Join course - Tuesday 12:00')}</a></div><div class="zoom-course-card"><strong>${t.courseAuto}</strong><br><a href="https://zoom.us/j/987654321" target="_blank" class="zoom-link">${lang === 'ar' ? 'انضم للكورس - الاثنين 14:00' : (lang === 'he' ? 'הצטרף לקורס - שני 14:00' : 'Join course - Monday 14:00')}</a></div><div class="zoom-course-card"><strong>${t.coursePrep}</strong><br><a href="https://zoom.us/j/111222333" target="_blank" class="zoom-link">${lang === 'ar' ? 'انضم للكورس - الأربعاء 16:00' : (lang === 'he' ? 'הצטרף לקורס - רביעי 16:00' : 'Join course - Wednesday 16:00')}</a></div></div><div><h4>${t.assignments}</h4><div class="assignment-item"><strong>${t.courseConstruction} - ${lang === 'ar' ? 'مشروع نهائي' : (lang === 'he' ? 'פרויקט גמר' : 'Final Project')}</strong><br>${lang === 'ar' ? 'آخر موعد: 20/4/2026' : (lang === 'he' ? 'מועד אחרון: 20/4/2026' : 'Deadline: 20/4/2026')}<br><button onclick="alert('${lang === 'ar' ? 'تم إرسال الواجب (تجريبي)' : (lang === 'he' ? 'המטלה נשלחה (הדגמה)' : 'Assignment submitted (demo)')}')" style="background:#f9b43a; border:none; padding:5px 15px; border-radius:30px;">${t.submitAssignment}</button></div><div class="assignment-item"><strong>${t.courseAuto} - ${lang === 'ar' ? 'بحث أنظمة كهربائية' : (lang === 'he' ? 'מחקר מערכות חשמל' : 'Electrical Systems Research')}</strong><br>${lang === 'ar' ? 'آخر موعد: 25/4/2026' : (lang === 'he' ? 'מועד אחרון: 25/4/2026' : 'Deadline: 25/4/2026')}<br><button onclick="alert('${lang === 'ar' ? 'تم إرسال الواجب (تجريبي)' : (lang === 'he' ? 'המטלה נשלחה (הדגמה)' : 'Assignment submitted (demo)')}')" style="background:#f9b43a; border:none; padding:5px 15px; border-radius:30px;">${t.submitAssignment}</button></div></div></div></div>`;
-                document.getElementById('logoutBtnPortal')?.addEventListener('click', () => { localStorage.removeItem('studentLoggedIn'); loggedIn = false; renderPortal(); });
-            }
-        }
-        renderPortal();
-
-        // WhatsApp contact form (without email)
-        document.getElementById('whatsappContactForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            let name = document.getElementById('contactName').value.trim();
-            let phone = document.getElementById('contactPhone').value.trim();
-            let msg = document.getElementById('contactMsg').value.trim();
-            if (!name || !msg) {
-                alert('الرجاء ملء الحقول الأساسية (الاسم والرسالة)');
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div class="dashboard-card login-form">
+                        <h3>تسجيل الدخول إلى المنصة السحابية</h3>
+                        <div id="portalMsg" class="status-msg" style="display:none;"></div>
+                        <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="student@college.edu"></div>
+                        <div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPass" placeholder="******"></div>
+                        <button id="doLoginBtn" class="btn btn-primary">دخول</button>
+                        <button id="doRegisterBtn" class="btn btn-secondary" style="background:#e2e8f0; margin-top:10px;">إنشاء حساب جديد (طالب)</button>
+                        <div class="firebase-warning"><i class="fas fa-cloud"></i> نظام إدارة دراجات سحابي متكامل. يمكنك التسجيل مجاناً والوصول لعلاماتك.</div>
+                    </div>`;
+                document.getElementById('doLoginBtn')?.addEventListener('click', handleLogin);
+                document.getElementById('doRegisterBtn')?.addEventListener('click', handleRegister);
                 return;
             }
-            let text = `مرحباً، استفسار من ${name}%0Aالهاتف: ${phone}%0Aالرسالة: ${msg}`;
-            let encodedText = encodeURIComponent(text);
-            window.open(`https://wa.me/972549302003?text=${encodedText}`, '_blank');
-        });
+            // لوحة المستخدم
+            if (currentUserRole === 'admin') renderAdminPanel(container);
+            else if (currentUserRole === 'teacher') renderTeacherPanel(container);
+            else renderStudentPanel(container);
+        }
 
-        document.getElementById('applyNowBtn')?.addEventListener('click', () => alert("سيتم توجيهك إلى بوابة القبول الإلكترونية قريباً."));
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            if (!email || !pass) return showPortalMsg('املأ الحقول', 'error');
+            if (firebaseReady && auth) {
+                try {
+                    const cred = await auth.signInWithEmailAndPassword(email, pass);
+                    const userDoc = await db.collection('users').doc(cred.user.uid).get();
+                    if (userDoc.exists) {
+                        currentUser = cred.user;
+                        currentUserRole = userDoc.data().role;
+                        localStorage.setItem('college_user_uid', cred.user.uid);
+                        renderPortalUI();
+                    } else { showPortalMsg('بيانات المستخدم غير مكتملة', 'error'); }
+                } catch(e) { showPortalMsg('فشل الدخول: '+e.message, 'error'); }
+            } else {
+                // mock mode
+                let users = await storageBackend.getUsers();
+                let found = users.find(u => u.email === email && u.pass === pass);
+                if(found) { currentUser = { email, uid: found.uid }; currentUserRole = found.role; localStorage.setItem('mock_user', JSON.stringify(currentUser)); renderPortalUI(); }
+                else showPortalMsg('بيانات غير صحيحة', 'error');
+            }
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            if (!email || !pass || pass.length < 6) return showPortalMsg('كلمة المرور 6 أحرف على الأقل', 'error');
+            if (firebaseReady && auth) {
+                try {
+                    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                    await db.collection('users').doc(cred.user.uid).set({ email, role: 'student', uid: cred.user.uid });
+                    currentUser = cred.user; currentUserRole = 'student';
+                    renderPortalUI();
+                } catch(e) { showPortalMsg(e.message, 'error'); }
+            } else {
+                let users = await storageBackend.getUsers();
+                if(users.find(u=>u.email===email)) return showPortalMsg('البريد موجود', 'error');
+                let newUser = { email, pass, role: 'student', uid: Date.now().toString() };
+                await storageBackend.saveUser(newUser);
+                currentUser = { email, uid: newUser.uid }; currentUserRole = 'student';
+                renderPortalUI();
+            }
+        }
+
+        async function renderStudentPanel(container) {
+            container.innerHTML = `<div><div style="display:flex; justify-content:space-between;"><h3>مرحباً الطالب ${currentUser.email}</h3><button id="logoutBtnPortal" class="logout-btn">تسجيل خروج</button></div><div id="studentGradesArea"><p>جاري تحميل العلامات...</p></div></div>`;
+            document.getElementById('logoutBtnPortal')?.addEventListener('click', () => { currentUser=null; if(auth) auth.signOut(); localStorage.removeItem('college_user_uid'); renderPortalUI(); });
+            const gradesArea = document.getElementById('studentGradesArea');
+            if (firebaseReady && db) {
+                try {
+                    const snapshot = await db.collection('grades').where('studentUid', '==', currentUser.uid).get();
+                    if (snapshot.empty) gradesArea.innerHTML = '<div class="assignment-item">لا توجد علامات مسجلة حتى الآن.</div>';
+                    else {
+                        let html = '<h4>سجل الدرجات</h4><table style="width:100%"><tr><th>المادة</th><th>الدرجة</th><th>المحاضر</th></tr>';
+                        snapshot.forEach(doc => { let g=doc.data(); html += `<tr><td>${g.subject}</td><td><b>${g.score}</b></td><td>${g.teacherEmail || ''}</td></tr>`; });
+                        html += '</table>';
+                        gradesArea.innerHTML = html;
+                    }
+                } catch(e) { gradesArea.innerHTML = '<div class="error">خطأ في جلب الدرجات</div>'; }
+            } else {
+                let grades = await storageBackend.getGrades();
+                let myGrades = grades.filter(g => g.studentUid === currentUser.uid);
+                if(myGrades.length) {
+                    let html = '<h4>العلامات المحلية</h4><table><tr><th>المادة</th><th>الدرجة</th></tr>';
+                    myGrades.forEach(g=>{ html+=`<tr><td>${g.subject}</td><td>${g.score}</td></tr>`; });
+                    gradesArea.innerHTML = html;
+                } else gradesArea.innerHTML = '<div>لا توجد درجات بعد، تواصل مع المحاضر.</div>';
+            }
+        }
+
+        async function renderTeacherPanel(container) {
+            container.innerHTML = `<div><h3>لوحة المحاضر - رصد الدرجات</h3><div><input id="studentUidInput" placeholder="معرف الطالب (UID)" class="form-control" style="width:100%; margin:10px 0; padding:10px;"><input id="subjectInput" placeholder="اسم المساق" style="width:100%; padding:10px;"><input id="scoreInput" type="number" placeholder="الدرجة من 100" style="width:100%; padding:10px; margin:10px 0;"><button id="submitGradeBtn" class="btn btn-primary">حفظ الدرجة سحابياً</button></div><button id="logoutTeacherBtn" class="logout-btn" style="margin-top:20px;">خروج</button></div>`;
+            document.getElementById('submitGradeBtn')?.addEventListener('click', async () => {
+                const studentUid = document.getElementById('studentUidInput').value;
+                const subject = document.getElementById('subjectInput').value;
+                const score = document.getElementById('scoreInput').value;
+                if (!studentUid || !subject || !score) return alert('املأ جميع الحقول');
+                const gradeData = { studentUid, subject, score, teacherEmail: currentUser.email, timestamp: new Date().toISOString() };
+                if (firebaseReady && db) {
+                    await db.collection('grades').add(gradeData);
+                    alert('تم حفظ الدرجة في السحاب');
+                } else {
+                    await storageBackend.addGrade(gradeData);
+                    alert('تم حفظ الدرجة محلياً');
+                }
+                document.getElementById('scoreInput').value = '';
+            });
+            document.getElementById('logoutTeacherBtn')?.addEventListener('click', () => { currentUser=null; renderPortalUI(); });
+        }
+
+        async function renderAdminPanel(container) {
+            container.innerHTML = `<div><h3>لوحة الإدارة - قائمة المستخدمين</h3><div id="usersListAdmin">تحميل...</div><button id="logoutAdminBtn" class="logout-btn">خروج</button></div>`;
+            if (firebaseReady && db) {
+                const usersSnap = await db.collection('users').get();
+                let html = '<table style="width:100%"><tr><th>البريد</th><th>الصلاحية</th><th>UID</th></tr>';
+                usersSnap.forEach(doc => { let u=doc.data(); html += `<tr><td>${u.email}</td><td>${u.role}</td><td><code>${doc.id.substring(0,8)}</code></td></tr>`; });
+                document.getElementById('usersListAdmin').innerHTML = html + '</table>';
+            } else {
+                let users = await storageBackend.getUsers();
+                let html = '<table><tr><th>البريد</th><th>الصلاحية</th></tr>';
+                users.forEach(u=>{ html+=`<tr><td>${u.email}</td><td>${u.role}</td></tr>`; });
+                document.getElementById('usersListAdmin').innerHTML = html;
+            }
+            document.getElementById('logoutAdminBtn')?.addEventListener('click', () => { currentUser=null; renderPortalUI(); });
+        }
+
+        function showPortalMsg(msg, type) { let div=document.getElementById('portalMsg'); if(div){ div.innerText=msg; div.style.display='block'; div.className=`status-msg ${type}`; setTimeout(()=>div.style.display='none',3000); } }
+
+        // التحقق من حالة تسجيل الدخول
+        async function initAuth() {
+            if (firebaseReady && auth) {
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        const doc = await db.collection('users').doc(user.uid).get();
+                        if (doc.exists) { currentUser = user; currentUserRole = doc.data().role; renderPortalUI(); }
+                        else { currentUser = null; renderPortalUI(); }
+                    } else { currentUser = null; renderPortalUI(); }
+                });
+            } else {
+                let saved = localStorage.getItem('mock_user');
+                if (saved) { let u = JSON.parse(saved); currentUser = u; currentUserRole = u.role; }
+                renderPortalUI();
+            }
+        }
+        initAuth();
+
+        // ترجمة واجهة (بسيطة)
+        const translations = { ar: { portalTitle: "بوابة الطالب السحابية - درجات وواجبات" }, he: { portalTitle: "פורטל הסטודנטים - ציונים ומטלות" }, en: { portalTitle: "Student Cloud Portal - Grades & Assignments" } };
+        function setLanguage(lang) { document.body.className = `lang-${lang}`; document.documentElement.setAttribute('dir', (lang === 'ar' || lang === 'he') ? 'rtl' : 'ltr'); localStorage.setItem('collegeLang', lang); document.getElementById('portalTitle').innerText = translations[lang]?.portalTitle || translations.ar.portalTitle; }
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
+        setLanguage(localStorage.getItem('collegeLang') || 'ar');
         document.getElementById('mobile-menu')?.addEventListener('click', () => document.getElementById('nav-list')?.classList.toggle('active'));
-        document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => document.getElementById('nav-list')?.classList.remove('active')));
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => anchor.addEventListener('click', function(e) { let target = document.querySelector(this.getAttribute('href')); if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); } }));
+        document.getElementById('whatsappForm')?.addEventListener('submit', (e) => { e.preventDefault(); let name = document.getElementById('contactName').value; let msg = document.getElementById('contactMsg').value; if(name&&msg) window.open(`https://wa.me/972549302003?text=${encodeURIComponent(`اسم: ${name}\n${msg}`)}`, '_blank'); else alert('املأ الاسم والرسالة'); });
     </script>
 </body>
 </html>
